@@ -1,0 +1,7 @@
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\bin\x86\Debug\ExampleAI.dll
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\bin\x86\Debug\ExampleAI.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\bin\x86\Debug\UvsChess.exe
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\bin\x86\Debug\UvsChess.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Debug\ExampleAI.csprojResolveAssemblyReference.cache
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Debug\ExampleAI.dll
+C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Debug\ExampleAI.pdb

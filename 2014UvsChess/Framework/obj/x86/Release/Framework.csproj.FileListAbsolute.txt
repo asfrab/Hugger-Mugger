@@ -1,0 +1,11 @@
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\bin\x86\Release\UvsChess.exe
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\bin\x86\Release\UvsChess.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.GuiChessBoard.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.WinGui.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.AboutUvsChess.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.Preferences.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.GuiDecisionTree.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.MessageBox.resources
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\Framework.csproj.GenerateResource.Cache
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.exe
+C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.pdb

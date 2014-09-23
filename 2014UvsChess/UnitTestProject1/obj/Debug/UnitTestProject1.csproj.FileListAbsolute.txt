@@ -1,0 +1,9 @@
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Debug\UnitTestProject1.csprojResolveAssemblyReference.cache
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\UnitTestProject1.dll
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\UnitTestProject1.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\StudentAI.dll
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\UvsChess.exe
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\StudentAI.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Debug\UvsChess.pdb
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Debug\UnitTestProject1.dll
+C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Debug\UnitTestProject1.pdb
