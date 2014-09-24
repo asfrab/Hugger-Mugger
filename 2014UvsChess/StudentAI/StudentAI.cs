@@ -124,6 +124,159 @@ namespace StudentAI
         } 
         #endregion
 
+        #region Pawn Moves
+
+        public List<ChessMove> PawnMoves(ChessBoard board, ChessLocation location, ChessColor color)
+        {
+            List<ChessMove> moves = new List<ChessMove>();
+            ChessMove newMove;
+            if (color == ChessColor.White)
+            {
+                if (location.X == 0)
+                {
+                    if (board.RawBoard[location.X + 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y - 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                        if (location.Y == 6) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y - 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 2));
+                                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                }
+                else if (location.X == 7)
+                {
+                    if (board.RawBoard[location.X - 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y - 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                        if (location.Y == 6) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y - 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 2));
+                                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (board.RawBoard[location.X - 1, location.Y - 1] < ChessPiece.Empty)// take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y - 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                        if (location.Y == 6) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y - 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 2));
+                                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                    if (board.RawBoard[location.X + 1, location.Y - 1] < ChessPiece.Empty) // take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
+                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+                    }
+                }
+            }
+            else // if color is black
+            {
+                if (location.X == 0)
+                {
+                    if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y + 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                        if (location.Y == 1) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y + 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 2));
+                                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                }
+                else if (location.X == 7)
+                {
+                    if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y + 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                        if (location.Y == 1) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y + 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 2));
+                                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty)// take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                    }
+                    if (board.RawBoard[location.X, location.Y + 1] == ChessPiece.Empty)
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                        if (location.Y == 1) // pawn is in starting position
+                        {
+                            if (board.RawBoard[location.X, location.Y + 2] == ChessPiece.Empty)
+                            {
+                                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 2));
+                                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                            }
+                        }
+                    }
+                    if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) // take the enemy piece
+                    {
+                        newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
+                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+                    }
+                }
+            }
+            return moves;
+        }
+
+        #endregion
+
         #region Rook Moves
         // Get MoveList for rook, criticisms welcome.  It’s long, I know, but it should run fast. ~Chris
         public List<ChessMove> RookMoves(ChessBoard board, ChessLocation position, ChessColor color) {
