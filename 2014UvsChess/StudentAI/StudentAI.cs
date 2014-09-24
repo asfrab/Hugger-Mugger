@@ -588,7 +588,7 @@ namespace StudentAI
 
                 x = orig_X - 1;
                 y = orig_Y - 1;
-                for (; y >= 0; )
+                for (; x >= 0 && y >= 0; )
                 {
                     if (board[x, y] != ChessPiece.Empty)
                     {
