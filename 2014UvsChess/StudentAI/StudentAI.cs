@@ -323,7 +323,7 @@ namespace StudentAI
                 {
                     for (int j = (location.Y - 1); j < (location.Y + 2); j++)
                     {
-                        if (i < 0 || j < 0) { continue; } // do nothing
+                        if (i < 0 || i > 7 || j < 0 || j > 7) { continue; } // do nothing
                         if (i == location.X && j == location.Y) { continue; } //also, do nothing
                         if (board.RawBoard[i, j] <= ChessPiece.Empty)
                         {
@@ -340,7 +340,7 @@ namespace StudentAI
                 {
                     for (int j = (location.Y - 1); j < (location.Y + 2); j++)
                     {
-                        if (i < 0 || j < 0) { continue; } // do nothing
+                        if (i < 0 || i > 7 || j < 0 || j > 7) { continue; } // do nothing
                         if (i == location.X && j == location.Y) { continue; } //also, do nothing
                         if (board.RawBoard[i, j] >= ChessPiece.Empty)
                         {
