@@ -7,3 +7,12 @@ C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\bin\Release\StudentAI.pdb
 C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.csprojResolveAssemblyReference.cache
 C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.dll
 C:\Users\Kenny\Desktop\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\UnitTestProject1.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\UnitTestProject1.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\StudentAI.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\bin\Release\StudentAI.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.csprojResolveAssemblyReference.cache
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\UnitTestProject1\obj\Release\UnitTestProject1.pdb

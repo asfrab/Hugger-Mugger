@@ -9,3 +9,14 @@ C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.Messa
 C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\Framework.csproj.GenerateResource.Cache
 C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.exe
 C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Release\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Release\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Release\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.GuiChessBoard.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.WinGui.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.AboutUvsChess.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.Preferences.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.GuiDecisionTree.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.Gui.MessageBox.resources
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\Framework.csproj.GenerateResource.Cache
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Release\UvsChess.pdb

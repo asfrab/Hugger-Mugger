@@ -5,3 +5,10 @@ C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\bin\x86\Release\UvsChess.pdb
 C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.csprojResolveAssemblyReference.cache
 C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.dll
 C:\Users\Kenny\Desktop\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\bin\x86\Release\ExampleAI.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\bin\x86\Release\ExampleAI.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\bin\x86\Release\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\bin\x86\Release\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.csprojResolveAssemblyReference.cache
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\ExampleAI\obj\x86\Release\ExampleAI.pdb

@@ -23,6 +23,7 @@ namespace StudentAI {
         public void GetPositionsTest() {
 
             StudentAI derp = new StudentAI();
+            StudentAI derp2 = new StudentAI();
                 ChessMove move;
                 ChessBoard board = new ChessBoard("rn1qk1nr/PPPPPPPP/4b1b1/8/8/B1B5/pppppppp/RN1QK1NR w KQkq - 0 1");
                 ChessColor color = ChessColor.Black;
@@ -30,7 +31,24 @@ namespace StudentAI {
 
             do { 
                 move = derp.GetNextMove(board, color);
-                board.MakeMove(move);
+                if (derp2.IsValidMove(board, move, color))
+                {
+                    board.MakeMove(move);
+                }
+                else
+                {
+                    Assert.Fail("move made was detected as invalid");
+                }
+                color = (color == ChessColor.White) ? ChessColor.Black : ChessColor.White;
+                move = derp2.GetNextMove(board, color);
+                if (derp.IsValidMove(board, move, color))
+                {
+                    board.MakeMove(move);
+                }
+                else
+                {
+                    Assert.Fail("move made was detected as invalid");
+                }
                 color = (color == ChessColor.White) ? ChessColor.Black : ChessColor.White;
             } while (move.Flag != ChessFlag.Stalemate);
             }
