@@ -86,9 +86,6 @@ namespace StudentAI
 
                 // Change position of our piec in local collection
                 pieceToMove = myPieces[moveToMake.From];
-                if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
-                    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
-                }
                 myPieces.Add(moveToMake.To, pieceToMove);
                 myPieces.Remove(moveToMake.From);
 
@@ -208,7 +205,7 @@ namespace StudentAI
             {
                 if (location.X == 0)
                 {
-                    if (board.RawBoard[location.X + 1, location.Y + 1] > ChessPiece.Empty) //take the enemy piece
+                    if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
                     {
                         newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
@@ -229,7 +226,7 @@ namespace StudentAI
                 }
                 else if (location.X == 7)
                 {
-                    if (board.RawBoard[location.X - 1, location.Y + 1] > ChessPiece.Empty) //take the enemy piece
+                    if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
                     {
                         newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
@@ -250,7 +247,7 @@ namespace StudentAI
                 }
                 else
                 {
-                    if (board.RawBoard[location.X - 1, location.Y + 1] > ChessPiece.Empty)// take the enemy piece
+                    if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty)// take the enemy piece
                     {
                         newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
@@ -268,7 +265,7 @@ namespace StudentAI
                             }
                         }
                     }
-                    if (board.RawBoard[location.X + 1, location.Y + 1] > ChessPiece.Empty) // take the enemy piece
+                    if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) // take the enemy piece
                     {
                         newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
@@ -473,6 +470,106 @@ namespace StudentAI
         } 
         #endregion
 
+        #region Pawn Moves
+        //This is the old version of the pawn moves.
+        //public List<ChessMove> PawnMoves(ChessBoard board, ChessLocation location, ChessColor color) {
+        //    List<ChessMove> moves = new List<ChessMove>();
+        //    ChessMove newMove;
+        //    if (color == ChessColor.White) {
+        //        if (location.X == 0) {
+        //            if (board.RawBoard[location.X + 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
+        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //        else if (location.X == 7) {
+        //            if (board.RawBoard[location.X - 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
+        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //        else {
+        //            if (board.RawBoard[location.X - 1, location.Y - 1] < ChessPiece.Empty)// take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
+        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //            if (board.RawBoard[location.X, location.Y - 1] == ChessPiece.Empty) {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 1));
+        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //                if (location.Y == 6) // pawn is in starting position
+        //                {
+        //                    if (board.RawBoard[location.X, location.Y - 2] == ChessPiece.Empty) {
+        //                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 2));
+        //                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                        if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //                    }
+        //                }
+        //            }
+        //            if (board.RawBoard[location.X + 1, location.Y - 1] < ChessPiece.Empty) // take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
+        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //    }
+        //    else // if color is black
+        //    {
+        //        if (location.X == 0) {
+        //            if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
+        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //        else if (location.X == 7) {
+        //            if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
+        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //        else {
+        //            if (board.RawBoard[location.X - 1, location.Y + 1] < ChessPiece.Empty)// take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
+        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //            if (board.RawBoard[location.X, location.Y + 1] == ChessPiece.Empty) {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 1));
+        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //                if (location.Y == 1) // pawn is in starting position
+        //                {
+        //                    if (board.RawBoard[location.X, location.Y + 2] == ChessPiece.Empty) {
+        //                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 2));
+        //                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                        if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //                    }
+        //                }
+        //            }
+        //            if (board.RawBoard[location.X + 1, location.Y + 1] < ChessPiece.Empty) // take the enemy piece
+        //            {
+        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
+        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
+        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
+        //            }
+        //        }
+        //    }
+        //    return moves;
+        //} 
+        #endregion
+
         #region Flag functions
         /// <summary>
         /// 
@@ -481,7 +578,8 @@ namespace StudentAI
         /// <param name="move"></param>
         /// <param name="color"></param>
         /// <returns> 0 if no check. -1 if check against color of move, 1 if check for player of move.</returns>
-        private int isCheck(ChessBoard before, ChessMove move, ChessColor color) {
+        public int isCheck(ChessBoard before, ChessMove move, ChessColor color)
+        {
             before = before.Clone();
             before.MakeMove(move);
             int x = 0;
@@ -489,14 +587,21 @@ namespace StudentAI
             int checkValue = 0;
             bool checkedBlack = false;
             bool checkedWhite = false;
-            while (x < 8 && !checkedBlack && !checkedWhite) {
-                while (y < 8 && !checkedBlack && !checkedWhite) {
+            int whiteTotal = 0;
+            int blackTotal = 0;
+            while (x < 8)//&&  (!checkedBlack || !checkedWhite))
+            {
+                while (y < 8)//&& (!checkedBlack || !checkedWhite))
+                {
                     var piece = before[x, y];
                     bool check = false;
-                    switch (piece) {
+                    switch (piece)
+                    {
                         case ChessPiece.WhiteKing:
+                            whiteTotal += 100;
                             checkedWhite = true;
-                            do {
+                            do
+                            {
                                 int tempx = x;
                                 int tempy = y;
                                 //pretend the piece is a queen.  If it can attack any black piece, check if that piece can attack it, if so, it's in check.
@@ -505,28 +610,34 @@ namespace StudentAI
                                     //up
                                     tempx = x;
                                     tempy = y - 1;
-                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up!
                                         tempy--;
                                     }
-                                    if (tempy >= 0) {
+                                    if (tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackRook:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (y - tempy == 1) {
+                                                    if (y - tempy == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -534,28 +645,34 @@ namespace StudentAI
                                     //down
                                     tempx = x;
                                     tempy = y + 1;
-                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving down
                                         tempy++;
                                     }
-                                    if (tempy < 8) {
+                                    if (tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackRook:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (tempy - y == 1) {
+                                                    if (tempy - y == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -563,28 +680,34 @@ namespace StudentAI
                                     //left
                                     tempx = x - 1;
                                     tempy = y;
-                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving left
                                         tempx--;
                                     }
-                                    if (tempx >= 0) {
+                                    if (tempx >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackRook:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (x - tempx == 1) {
+                                                    if (x - tempx == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -592,28 +715,34 @@ namespace StudentAI
                                     //right
                                     tempx = x + 1;
                                     tempy = y;
-                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving right
                                         tempx++;
                                     }
-                                    if (tempx < 8) {
+                                    if (tempx < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackRook:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (tempx - x == 1) {
+                                                    if (tempx - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -621,30 +750,36 @@ namespace StudentAI
                                     //upleft
                                     tempx = x - 1;
                                     tempy = y - 1;
-                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up left
                                         tempy--;
                                         tempx--;
                                     }
-                                    if (tempx >= 0 && tempy >= 0) {
+                                    if (tempx >= 0 && tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackBishop:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackPawn:
                                                 case ChessPiece.BlackKing:
-                                                    if (x - tempx == 1 && y - tempy == 1) {
+                                                    if (x - tempx == 1 && y - tempy == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -652,30 +787,36 @@ namespace StudentAI
                                     //upright
                                     tempx = x + 1;
                                     tempy = y - 1;
-                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up right
                                         tempy--;
                                         tempx++;
                                     }
-                                    if (tempx < 8 && tempy >= 0) {
+                                    if (tempx < 8 && tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackBishop:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackPawn:
                                                 case ChessPiece.BlackKing:
-                                                    if (tempx - x == 1 && tempy - x == 1) {
+                                                    if (tempx - x == 1 && tempy - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -683,29 +824,35 @@ namespace StudentAI
                                     //downleft
                                     tempx = x - 1;
                                     tempy = y + 1;
-                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving down left
                                         tempy++;
                                         tempx--;
                                     }
-                                    if (tempx >= 0 && tempy < 8) {
+                                    if (tempx >= 0 && tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackBishop:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (x - tempx == tempy - y && x - tempx == 1) {
+                                                    if (x - tempx == tempy - y && x - tempx == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -713,29 +860,35 @@ namespace StudentAI
                                     //downright
                                     tempx = x + 1;
                                     tempy = y + 1;
-                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving  down right
                                         tempy++;
                                         tempx++;
                                     }
-                                    if (tempx < 8 && tempy < 8) {
+                                    if (tempx < 8 && tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a black piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.BlackBishop:
                                                 case ChessPiece.BlackQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.BlackKing:
-                                                    if (tempx - x == tempy - y && tempx - x == 1) {
+                                                    if (tempx - x == tempy - y && tempx - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -743,53 +896,62 @@ namespace StudentAI
                                 }
 
                                 //pretend the piece is a knight.  If it can attack any black knight, it's in check.
-                                if (!check) {
+                                if (!check)
+                                {
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.BlackKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
@@ -797,13 +959,16 @@ namespace StudentAI
                             }
                             while (false);  //only repeats it once, however, I can leave the code at any time with a break;
 
-                            if (check && checkValue >= 0) {
+                            if (check && checkValue >= 0)
+                            {
                                 checkValue = color == ChessColor.White ? -1 : 1;
                             }
                             break;
                         case ChessPiece.BlackKing:
+                            blackTotal += 100;
                             checkedBlack = true;
-                            do {
+                            do
+                            {
                                 int tempx = x;
                                 int tempy = y;
                                 //pretend the piece is a queen.  If it can attack any white piece, check if that piece can attack it, if so, it's in check.
@@ -812,28 +977,34 @@ namespace StudentAI
                                     //up
                                     tempx = x;
                                     tempy = y - 1;
-                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up!
                                         tempy--;
                                     }
-                                    if (tempy >= 0) {
+                                    if (tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty) {
+                                        if (attacking > ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteRook:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (y - tempy == 1) {
+                                                    if (y - tempy == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -841,28 +1012,34 @@ namespace StudentAI
                                     //down
                                     tempx = x;
                                     tempy = y + 1;
-                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving down
                                         tempy++;
                                     }
-                                    if (tempy < 8) {
+                                    if (tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteRook:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (tempy - y == 1) {
+                                                    if (tempy - y == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -870,28 +1047,34 @@ namespace StudentAI
                                     //left
                                     tempx = x - 1;
                                     tempy = y;
-                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving left
                                         tempx--;
                                     }
-                                    if (tempx >= 0) {
+                                    if (tempx >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteRook:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (x - tempx == 1) {
+                                                    if (x - tempx == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -899,28 +1082,34 @@ namespace StudentAI
                                     //right
                                     tempx = x + 1;
                                     tempy = y;
-                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving right
                                         tempx++;
                                     }
-                                    if (tempx < 8) {
+                                    if (tempx < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteRook:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (tempx - x == 1) {
+                                                    if (tempx - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -928,29 +1117,35 @@ namespace StudentAI
                                     //upleft
                                     tempx = x - 1;
                                     tempy = y - 1;
-                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up left
                                         tempy--;
                                         tempx--;
                                     }
-                                    if (tempx >= 0 && tempy >= 0) {
+                                    if (tempx >= 0 && tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteBishop:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (x - tempx == 1 && y - tempy == 1) {
+                                                    if (x - tempx == 1 && y - tempy == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -958,29 +1153,35 @@ namespace StudentAI
                                     //upright
                                     tempx = x + 1;
                                     tempy = y - 1;
-                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving up right
                                         tempy--;
                                         tempx++;
                                     }
-                                    if (tempx < 8 && tempy >= 0) {
+                                    if (tempx < 8 && tempy >= 0)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteBishop:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (tempx - x == 1 && tempy - x == 1) {
+                                                    if (tempx - x == 1 && tempy - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -988,30 +1189,36 @@ namespace StudentAI
                                     //downleft
                                     tempx = x - 1;
                                     tempy = y + 1;
-                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving down left
                                         tempy++;
                                         tempx--;
                                     }
-                                    if (tempx >= 0 && tempy < 8) {
+                                    if (tempx >= 0 && tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteBishop:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhitePawn:
                                                 case ChessPiece.WhiteKing:
-                                                    if (x - tempx == tempy - y && x - tempx == 1) {
+                                                    if (x - tempx == tempy - y && x - tempx == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -1019,30 +1226,36 @@ namespace StudentAI
                                     //downright
                                     tempx = x + 1;
                                     tempy = y + 1;
-                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty) {
+                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    {
                                         //keep moving  down right
                                         tempy++;
                                         tempx++;
                                     }
-                                    if (tempx < 8 && tempy < 8) {
+                                    if (tempx < 8 && tempy < 8)
+                                    {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty) {
+                                        if (attacking < ChessPiece.Empty)
+                                        {
                                             //this is a white piece.
-                                            switch (attacking) {
+                                            switch (attacking)
+                                            {
                                                 case ChessPiece.WhiteBishop:
                                                 case ChessPiece.WhiteQueen:
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhitePawn:
                                                 case ChessPiece.WhiteKing:
-                                                    if (tempx - x == tempy - y && tempx - x == 1) {
+                                                    if (tempx - x == tempy - y && tempx - x == 1)
+                                                    {
                                                         check = true;
                                                     }
                                                     break;
                                                 default:
                                                     break;
                                             }
-                                            if (check) {
+                                            if (check)
+                                            {
                                                 break;
                                             }
                                         }
@@ -1050,63 +1263,103 @@ namespace StudentAI
                                 }
 
                                 //pretend the piece is a knight.  If it can attack any white knight, it's in check.
-                                if (!check) {
+                                if (!check)
+                                {
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[x, y] == ChessPiece.WhiteKnight) {
+                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    {
                                         check = true;
                                         break;
                                     }
                                 }
                             }
                             while (false);  //only repeats it once, however, I can leave the code at any time with a break;
-                            if (check && checkValue >= 0) {
+                            if (check && checkValue >= 0)
+                            {
                                 checkValue = color == ChessColor.Black ? -1 : 1;
 
                             }
+                            break;
+                        case ChessPiece.BlackBishop:
+                            blackTotal += 4;
+                            break;
+                        case ChessPiece.BlackKnight:
+                            blackTotal += 3;
+                            break;
+                        case ChessPiece.BlackPawn:
+                            blackTotal += 1;
+                            break;
+                        case ChessPiece.BlackQueen:
+                            blackTotal += 9;
+                            break;
+                        case ChessPiece.BlackRook:
+                            blackTotal += 5;
+                            break;
+                        case ChessPiece.WhiteBishop:
+                            whiteTotal += 4;
+                            break;
+                        case ChessPiece.WhiteKnight:
+                            whiteTotal += 3;
+                            break;
+                        case ChessPiece.WhitePawn:
+                            whiteTotal += 1;
+                            break;
+                        case ChessPiece.WhiteQueen:
+                            whiteTotal += 9;
+                            break;
+                        case ChessPiece.WhiteRook:
+                            whiteTotal += 5;
                             break;
                         default:
                             break;
@@ -1116,26 +1369,39 @@ namespace StudentAI
                 y = 0;
                 x++;
             }
-            if (!checkedBlack) {
+            if (!checkedBlack)
+            {
                 //the black king is dead.
-                if (color == ChessColor.Black) {
+                if (color == ChessColor.Black)
+                {
                     checkValue = -1;
                 }
-                else {
+                else
+                {
                     checkValue = 1;
                 }
             }
-            if (!checkedWhite) {
+            if (!checkedWhite)
+            {
                 //the white king is dead.
-                if (color == ChessColor.White) {
+                if (color == ChessColor.White)
+                {
                     checkValue = -1;
                 }
-                else {
+                else
+                {
                     checkValue = 1;
                 }
             }
+            move.ValueOfMove = color == ChessColor.Black ? blackTotal - whiteTotal : whiteTotal - blackTotal;
+            if (checkValue > 0)
+            {
+                move.Flag = ChessFlag.Check;
+                move.ValueOfMove += 30;  //30 points due to the king being in check.
+            }
+
             return checkValue;
-        } 
+        }
         #endregion
         #endregion
 
