@@ -311,6 +311,50 @@ namespace StudentAI
 
         #endregion
 
+        #region King Moves
+
+        public List<ChessMove> KingMoves(ChessBoard board, ChessLocation location, ChessColor color)
+        {
+            List<ChessMove> moves = new List<ChessMove>();
+            ChessMove newMove;
+            if (color == ChessColor.White)
+            {
+                for (int i = (location.X - 1); i < (location.X + 2); i++)
+                {
+                    for (int j = (location.Y - 1); j < (location.Y + 2); j++)
+                    {
+                        if (i < 0 || j < 0) { continue; } // do nothing
+                        if (i == location.X && j == location.Y) { continue; } //also, do nothing
+                        if (board.RawBoard[i, j] <= ChessPiece.Empty)
+                        {
+                            newMove = new ChessMove(location, new ChessLocation(i, j));
+                            if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
+
+                        }
+                    }
+                }
+            }
+            else // the color is black
+            {
+                for (int i = (location.X - 1); i < (location.X + 2); i++)
+                {
+                    for (int j = (location.Y - 1); j < (location.Y + 2); j++)
+                    {
+                        if (i < 0 || j < 0) { continue; } // do nothing
+                        if (i == location.X && j == location.Y) { continue; } //also, do nothing
+                        if (board.RawBoard[i, j] >= ChessPiece.Empty)
+                        {
+                            newMove = new ChessMove(location, new ChessLocation(i, j));
+                            if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
+                        }
+                    }
+                }
+            }
+            return moves;
+        }
+
+        #endregion
+
         #region Rook Moves
         /// <summary> Gather the list of valid moves for the Rook </summary>
         /// <param name="board">Current board state</param>

@@ -12,3 +12,10 @@ C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Stud
 C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.csprojResolveAssemblyReference.cache
 C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.dll
 C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.pdb
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\StudentAI.dll
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\StudentAI.pdb
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\UvsChess.exe
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\UvsChess.pdb
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.csprojResolveAssemblyReference.cache
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.dll
+C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.pdb
