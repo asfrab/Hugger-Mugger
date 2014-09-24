@@ -86,6 +86,10 @@ namespace StudentAI
 
                 // Change position of our piec in local collection
                 pieceToMove = myPieces[moveToMake.From];
+                
+                if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
+                    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
+                }
                 myPieces.Add(moveToMake.To, pieceToMove);
                 myPieces.Remove(moveToMake.From);
 
