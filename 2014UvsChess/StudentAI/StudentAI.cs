@@ -162,7 +162,7 @@ namespace StudentAI
                 switch ((int)(piece.Value + 1) % 7)
                 {
                     case 1: // Pawn
-                        //possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
                         break;
                     case 2: // Rook
                         //possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
@@ -171,13 +171,13 @@ namespace StudentAI
                         possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
                         break;
                     case 4: // Bishop
-                        //possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
                         break;
                     case 5: // Queen
-                        //possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
                         break;
                     case 6: // King
-                        //possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
                         break;
                 }
             }
@@ -406,6 +406,7 @@ namespace StudentAI
         {
             int orig_X = position.X;
             int orig_Y = position.Y;
+            ChessMove move;
 
             List<ChessMove> movelist = new List<ChessMove>();
             if (color == ChessColor.Black)
@@ -416,11 +417,19 @@ namespace StudentAI
                     {
                         if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                    move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
@@ -428,11 +437,19 @@ namespace StudentAI
                     {
                         if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                    move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
@@ -440,11 +457,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
@@ -452,12 +477,20 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
                 }
+            }
             }
             else // This is white
             {
@@ -467,11 +500,19 @@ namespace StudentAI
                     {
                         if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                    move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
@@ -479,11 +520,19 @@ namespace StudentAI
                     {
                         if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                    move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
@@ -491,11 +540,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
@@ -503,12 +560,20 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
                 }
+            }
             }
             return movelist;
         }
@@ -526,23 +591,34 @@ namespace StudentAI
 
             int orig_X = position.X;
             int orig_Y = position.Y;
+            ChessMove move;
 
             if (color == ChessColor.Black)
             {
                 int x = orig_X + 1;
                 int y = orig_Y + 1;
+
+
                 for (; x < 8 && y < 8; )
                 {
                     if (board[x, y] != ChessPiece.Empty)
                     {
                         if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     ++x;
                     ++y;
@@ -556,12 +632,19 @@ namespace StudentAI
                     {
                         if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     ++x;
                     --y;
@@ -575,12 +658,20 @@ namespace StudentAI
                     {
                         if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     --x;
                     ++y;
@@ -594,12 +685,19 @@ namespace StudentAI
                     {
                         if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     --x;
                     --y;
@@ -615,12 +713,20 @@ namespace StudentAI
                     {
                         if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     ++x;
                     ++y;
@@ -634,12 +740,19 @@ namespace StudentAI
                     {
                         if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     ++x;
                     --y;
@@ -653,12 +766,20 @@ namespace StudentAI
                     {
                         if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     --x;
                     ++y;
@@ -672,12 +793,20 @@ namespace StudentAI
                     {
                         if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                            move = new ChessMove(position, new ChessLocation(x, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                        }
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                    move = new ChessMove(position, new ChessLocation(x, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
 
                     --x;
                     --y;
@@ -699,6 +828,7 @@ namespace StudentAI
 
             int orig_X = position.X;
             int orig_Y = position.Y;
+            ChessMove move;
 
             if (color == ChessColor.Black)
             {
@@ -709,11 +839,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
@@ -721,11 +859,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
                 }
                 #endregion
 
@@ -748,13 +894,21 @@ namespace StudentAI
                         {
                             if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                                move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                             HFlag = false;
                         }
                         else
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                     }
                     if (UpFlag)
@@ -766,13 +920,21 @@ namespace StudentAI
                             {
                                 if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                    move = new ChessMove(position, new ChessLocation(x, yUp));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 UpFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                move = new ChessMove(position, new ChessLocation(x, yUp));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -790,13 +952,21 @@ namespace StudentAI
                             {
                                 if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                    move = new ChessMove(position, new ChessLocation(x, yDown));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 DownFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                move = new ChessMove(position, new ChessLocation(x, yDown));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -826,13 +996,21 @@ namespace StudentAI
                         {
                             if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                                move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                             HFlag = false;
                         }
                         else
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                     }
                     if (UpFlag)
@@ -844,13 +1022,21 @@ namespace StudentAI
                             {
                                 if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                    move = new ChessMove(position, new ChessLocation(x, yUp));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 UpFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                move = new ChessMove(position, new ChessLocation(x, yUp));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -868,13 +1054,21 @@ namespace StudentAI
                             {
                                 if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                    move = new ChessMove(position, new ChessLocation(x, yDown));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 DownFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                move = new ChessMove(position, new ChessLocation(x, yDown));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -894,11 +1088,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
@@ -906,11 +1108,19 @@ namespace StudentAI
                     {
                         if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                            move = new ChessMove(position, new ChessLocation(orig_X, y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                         break;
                     }
-                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                    move = new ChessMove(position, new ChessLocation(orig_X, y));
+                    if (isCheck(board, move, color) >= 0)
+                    {
+                        movelist.Add(move);
+                    }
                 }
                 #endregion
 
@@ -933,13 +1143,21 @@ namespace StudentAI
                         {
                             if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                                move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                             HFlag = false;
                         }
                         else
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                     }
                     if (UpFlag)
@@ -951,13 +1169,21 @@ namespace StudentAI
                             {
                                 if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                    move = new ChessMove(position, new ChessLocation(x, yUp));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 UpFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                move = new ChessMove(position, new ChessLocation(x, yUp));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -975,13 +1201,21 @@ namespace StudentAI
                             {
                                 if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                    move = new ChessMove(position, new ChessLocation(x, yDown));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 DownFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                move = new ChessMove(position, new ChessLocation(x, yDown));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -1011,13 +1245,21 @@ namespace StudentAI
                         {
                             if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                                move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                             HFlag = false;
                         }
                         else
                         {
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            move = new ChessMove(position, new ChessLocation(x, orig_Y));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                movelist.Add(move);
+                            }
                         }
                     }
                     if (UpFlag)
@@ -1029,13 +1271,21 @@ namespace StudentAI
                             {
                                 if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                    move = new ChessMove(position, new ChessLocation(x, yUp));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 UpFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                move = new ChessMove(position, new ChessLocation(x, yUp));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
@@ -1053,13 +1303,21 @@ namespace StudentAI
                             {
                                 if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
-                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                    move = new ChessMove(position, new ChessLocation(x, yDown));
+                                    if (isCheck(board, move, color) >= 0)
+                                    {
+                                        movelist.Add(move);
+                                    }
                                 }
                                 DownFlag = false;
                             }
                             else
                             {
-                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                move = new ChessMove(position, new ChessLocation(x, yDown));
+                                if (isCheck(board, move, color) >= 0)
+                                {
+                                    movelist.Add(move);
+                                }
                             }
                         }
                         else
