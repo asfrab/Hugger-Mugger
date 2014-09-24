@@ -397,9 +397,9 @@ namespace StudentAI
             {
                 for (int x = orig_X + 1; x < 8; ++x)
                 {
-                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x, orig_Y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
@@ -409,9 +409,9 @@ namespace StudentAI
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
-                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x, orig_Y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
@@ -421,9 +421,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -433,9 +433,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -448,9 +448,9 @@ namespace StudentAI
             {
                 for (int x = orig_X + 1; x < 8; ++x)
                 {
-                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x, orig_Y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
@@ -460,9 +460,9 @@ namespace StudentAI
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
-                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x, orig_Y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
@@ -472,9 +472,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -484,9 +484,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -518,9 +518,9 @@ namespace StudentAI
                 int y = orig_Y + 1;
                 for (; x < 8 && y < 8; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -537,9 +537,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; x < 8 && y >= 0; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -556,9 +556,9 @@ namespace StudentAI
                 y = orig_Y + 1;
                 for (; x >= 0 && y < 8; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -573,11 +573,11 @@ namespace StudentAI
 
                 x = orig_X - 1;
                 y = orig_Y - 1;
-                for (; y >= 0; )
+                for (; x >= 0 && y >= 0; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -596,9 +596,9 @@ namespace StudentAI
                 int y = orig_Y + 1;
                 for (; x < 8 && y < 8; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -615,9 +615,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; x < 8 && y >= 0; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -634,9 +634,9 @@ namespace StudentAI
                 y = orig_Y + 1;
                 for (; x >= 0 && y < 8; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -653,9 +653,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; y >= 0 && x >= 0; )
                 {
-                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    if (board[x, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
@@ -690,9 +690,9 @@ namespace StudentAI
                 #region Handling Up and Down Movements
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -702,9 +702,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -729,9 +729,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x, orig_Y] != ChessPiece.Empty)
                         {
-                            if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                             {
                                 movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                             }
@@ -747,9 +747,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            if (board[x, yUp] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
                                 }
@@ -771,9 +771,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            if (board[x, yDown] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
                                 }
@@ -807,9 +807,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x, orig_Y] != ChessPiece.Empty)
                         {
-                            if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
                             {
                                 movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                             }
@@ -825,9 +825,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            if (board[x, yUp] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
                                 }
@@ -849,9 +849,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            if (board[x, yDown] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
                                 }
@@ -875,9 +875,9 @@ namespace StudentAI
                 #region Handling Up and Down Movements
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -887,9 +887,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X, y] != ChessPiece.Empty)
                     {
-                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
                         {
                             movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
@@ -914,9 +914,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x, orig_Y] != ChessPiece.Empty)
                         {
-                            if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                             {
                                 movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                             }
@@ -932,9 +932,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            if (board[x, yUp] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
                                 }
@@ -956,9 +956,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            if (board[x, yDown] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
                                 }
@@ -992,9 +992,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x, orig_Y] != ChessPiece.Empty)
                         {
-                            if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
                             {
                                 movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                             }
@@ -1010,9 +1010,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            if (board[x, yUp] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
                                 }
@@ -1034,9 +1034,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            if (board[x, yDown] != ChessPiece.Empty)
                             {
-                                if (board.RawBoard[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
                                 {
                                     movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
                                 }
