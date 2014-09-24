@@ -14,7 +14,7 @@ namespace StudentAI {
 
             List<ChessMove> moves = new List<ChessMove>();
 
-            moves = derp.PawnMoves(new ChessBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),new ChessLocation(7,6), ChessColor.White);
+            moves = derp.BishopMoves(new ChessBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),new ChessLocation(1,4), ChessColor.White);
             //Debug.Assert(moves.Contains(new ChessMove(new ChessLocation(1,7),  new ChessLocation(0, 5))),
             //                            new ChessMove(new ChessLocation(1,7),  new ChessLocation(2, 5))};
         }
@@ -24,13 +24,14 @@ namespace StudentAI {
 
             StudentAI derp = new StudentAI();
                 ChessMove move;
-                ChessBoard board = new ChessBoard("rnbqkbnr/8/8/8/8/2p5/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                ChessBoard board = new ChessBoard("rn1qk1nr/PPPPPPPP/4b1b1/8/8/B1B5/pppppppp/RN1QK1NR w KQkq - 0 1");
                 ChessColor color = ChessColor.Black;
             int i = 0;
 
             do { 
                 move = derp.GetNextMove(board, color);
                 board.MakeMove(move);
+                color = (color == ChessColor.White) ? ChessColor.Black : ChessColor.White;
             } while (move.Flag != ChessFlag.Stalemate);
             }
     }

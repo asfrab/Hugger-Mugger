@@ -79,7 +79,7 @@ namespace StudentAI
                         possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
                         break;
                     case 6: // King
-                        //possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
                         break;
                 }
             }
@@ -625,7 +625,7 @@ namespace StudentAI
 
                 x = orig_X - 1;
                 y = orig_Y - 1;
-                for (; y >= 0; )
+                for (; y >= 0 && x >= 0; )
                 {
                     if (board.RawBoard[x, y] != ChessPiece.Empty)
                     {
