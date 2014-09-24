@@ -73,10 +73,10 @@ namespace StudentAI
                         possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
                         break;
                     case 4: // Bishop
-                        //possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
                         break;
                     case 5: // Queen
-                        //possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
                         break;
                     case 6: // King
                         //possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
@@ -312,107 +312,682 @@ namespace StudentAI
         #endregion
 
         #region Rook Moves
-        // Get MoveList for rook, criticisms welcome.  It’s long, I know, but it should run fast. ~Chris
-        public List<ChessMove> RookMoves(ChessBoard board, ChessLocation position, ChessColor color) {
+        /// <summary> Gather the list of valid moves for the Rook </summary>
+        /// <param name="board">Current board state</param>
+        /// <param name="position">Current position of the rook</param>
+        /// <param name="color">What color is this rook</param>
+        /// <returns>List of all possible, valid, chess moves this rook can make</returns>
+        public List<ChessMove> RookMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        {
+            int orig_X = position.X;
+            int orig_Y = position.Y;
+
             List<ChessMove> movelist = new List<ChessMove>();
-
-            if (color == ChessColor.Black) {
-                for (int x = position.X + 1; x < 8; ++x) {
-                    if (board.RawBoard[x, position.Y] != ChessPiece.Empty) {
-                        if (board.RawBoard[x, position.Y] > ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+            if (color == ChessColor.Black)
+            {
+                for (int x = orig_X + 1; x < 8; ++x)
+                {
+                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                 }
-                for (int x = position.X - 1; x >= 0; --x) {
-                    if (board.RawBoard[x, position.Y] != ChessPiece.Empty) {
-                        if (board.RawBoard[x, position.Y] > ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+                for (int x = orig_X - 1; x >= 0; --x)
+                {
+                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
                 }
-                for (int y = position.Y + 1; y < 8; ++y) {
-                    if (board.RawBoard[position.X, y] != ChessPiece.Empty) {
-                        if (board.RawBoard[position.X, y] > ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                for (int y = orig_Y + 1; y < 8; ++y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
-
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                 }
-                for (int y = position.Y - 1; y >= 0; --y) {
-                    if (board.RawBoard[position.X, y] != ChessPiece.Empty) {
-                        if (board.RawBoard[position.X, y] > ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                for (int y = orig_Y - 1; y >= 0; --y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                         }
                         break;
                     }
-
-                    movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
                 }
             }
             else // This is white
-        	{
-                for (int x = position.X + 1; x < 8; ++x) {
-                    if (board.RawBoard[x, position.Y] != ChessPiece.Empty) {
-                        if (board.RawBoard[x, position.Y] < ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+            {
+                for (int x = orig_X + 1; x < 8; ++x)
+                {
+                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                }
+                for (int x = orig_X - 1; x >= 0; --x)
+                {
+                    if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                }
+                for (int y = orig_Y + 1; y < 8; ++y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+                for (int y = orig_Y - 1; y >= 0; --y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+            }
+            return movelist;
+        }
+        #endregion
+
+        #region Bishop Moves
+        /// <summary> Gather the list of valid moves for the Bishop </summary>
+        /// <param name="board">Current board state</param>
+        /// <param name="position">Current position of the bishop</param>
+        /// <param name="color">What color is this bishop</param>
+        /// <returns>List of all possible, valid, chess moves this bishop can make</returns>
+        public List<ChessMove> BishopMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        {
+            List<ChessMove> movelist = new List<ChessMove>();
+
+            int orig_X = position.X;
+            int orig_Y = position.Y;
+
+            if (color == ChessColor.Black)
+            {
+                int x = orig_X + 1;
+                int y = orig_Y + 1;
+                for (; x < 8 && y < 8; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    ++x;
+                    ++y;
                 }
-                for (int x = position.X - 1; x >= 0; --x) {
-                    if (board.RawBoard[x, position.Y] != ChessPiece.Empty) {
-                        if (board.RawBoard[x, position.Y] < ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+
+                x = orig_X + 1;
+                y = orig_Y - 1;
+                for (; x < 8 && y >= 0; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(x, position.Y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    ++x;
+                    --y;
                 }
-                for (int y = position.Y + 1; y < 8; ++y) {
-                    if (board.RawBoard[position.X, y] != ChessPiece.Empty) {
-                        if (board.RawBoard[position.X, y] < ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+
+                x = orig_X - 1;
+                y = orig_Y + 1;
+                for (; x >= 0 && y < 8; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    --x;
+                    ++y;
                 }
-                for (int y = position.Y - 1; y >= 0; --y) {
-                    if (board.RawBoard[position.X, y] != ChessPiece.Empty) {
-                        if (board.RawBoard[position.X, y] < ChessPiece.Empty) // < empty = black | > empty = white
-                    	{
-                            movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+
+                x = orig_X - 1;
+                y = orig_Y - 1;
+                for (; y >= 0; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
                         }
                         break;
                     }
 
-                    movelist.Add(new ChessMove(position, new ChessLocation(position.X, y)));
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    --x;
+                    --y;
                 }
+            }
+            else // This is white
+            {
+                int x = orig_X + 1;
+                int y = orig_Y + 1;
+                for (; x < 8 && y < 8; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                        }
+                        break;
+                    }
+
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    ++x;
+                    ++y;
+                }
+
+                x = orig_X + 1;
+                y = orig_Y - 1;
+                for (; x < 8 && y >= 0; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                        }
+                        break;
+                    }
+
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    ++x;
+                    --y;
+                }
+
+                x = orig_X - 1;
+                y = orig_Y + 1;
+                for (; x >= 0 && y < 8; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                        }
+                        break;
+                    }
+
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    --x;
+                    ++y;
+                }
+
+                x = orig_X - 1;
+                y = orig_Y - 1;
+                for (; y >= 0; )
+                {
+                    if (board.RawBoard[x, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+                        }
+                        break;
+                    }
+
+                    movelist.Add(new ChessMove(position, new ChessLocation(x, y)));
+
+                    --x;
+                    --y;
+                }
+            }
+            return movelist;
+        }
+        #endregion
+
+        #region Queen Moves
+        /// <summary> Gather the list of valid moves for the Queen </summary>
+        /// <param name="board">Current board state</param>
+        /// <param name="position">Current position of the queen</param>
+        /// <param name="color">What color is this queen</param>
+        /// <returns>List of all possible, valid, chess moves this queen can make</returns>
+        public List<ChessMove> QueenMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        {
+            List<ChessMove> movelist = new List<ChessMove>();
+
+            int orig_X = position.X;
+            int orig_Y = position.Y;
+
+            if (color == ChessColor.Black)
+            {
+                #region Handling Up and Down Movements
+                for (int y = orig_Y + 1; y < 8; ++y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+                for (int y = orig_Y - 1; y >= 0; --y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+                #endregion
+
+                #region Handling Movement to the Right
+                int yUp = orig_Y;
+                int yDown = orig_Y;
+                bool UpFlag = true; // Flags set true means we can continue this direction
+                bool DownFlag = true;
+                bool HFlag = true; // Horizontal movement flag
+                for (int x = orig_X + 1; x < 8; ++x)
+                {
+                    if (HFlag == false && UpFlag == false && DownFlag == false)
+                    {
+                        break;
+                    }
+
+                    if (HFlag)
+                    {
+                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        {
+                            if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            }
+                            HFlag = false;
+                        }
+                        else
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                    }
+                    if (UpFlag)
+                    {
+                        ++yUp;
+                        if (yUp < 8)
+                        {
+                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                }
+                                UpFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                            }
+                        }
+                        else
+                        {
+                            UpFlag = false;
+                        }
+                    }
+                    if (DownFlag)
+                    {
+                        --yDown;
+                        if (yDown >= 0)
+                        {
+
+                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                }
+                                DownFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                            }
+                        }
+                        else
+                        {
+                            DownFlag = false;
+                        }
+                    }
+                }
+                #endregion
+
+                #region Handling Movement to the Left
+                yUp = orig_Y;
+                yDown = orig_Y;
+                UpFlag = true; // Flags set true means we can continue this direction
+                DownFlag = true;
+                HFlag = true; // Horizontal movement flag
+                for (int x = orig_X - 1; x >= 0; --x)
+                {
+                    if (HFlag == false && UpFlag == false && DownFlag == false)
+                    {
+                        break;
+                    }
+
+                    if (HFlag)
+                    {
+                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        {
+                            if (board.RawBoard[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            }
+                            HFlag = false;
+                        }
+                        else
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                    }
+                    if (UpFlag)
+                    {
+                        ++yUp;
+                        if (yUp < 8)
+                        {
+                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                }
+                                UpFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                            }
+                        }
+                        else
+                        {
+                            UpFlag = false;
+                        }
+                    }
+                    if (DownFlag)
+                    {
+                        --yDown;
+                        if (yDown >= 0)
+                        {
+
+                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                }
+                                DownFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                            }
+                        }
+                        else
+                        {
+                            DownFlag = false;
+                        }
+                    }
+                }
+                #endregion
+            }
+            else // This is white
+            {
+                #region Handling Up and Down Movements
+                for (int y = orig_Y + 1; y < 8; ++y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+                for (int y = orig_Y - 1; y >= 0; --y)
+                {
+                    if (board.RawBoard[orig_X, y] != ChessPiece.Empty)
+                    {
+                        if (board.RawBoard[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                        }
+                        break;
+                    }
+                    movelist.Add(new ChessMove(position, new ChessLocation(orig_X, y)));
+                }
+                #endregion
+
+                #region Handling Movement to the Right
+                int yUp = orig_Y;
+                int yDown = orig_Y;
+                bool UpFlag = true; // Flags set true means we can continue this direction
+                bool DownFlag = true;
+                bool HFlag = true; // Horizontal movement flag
+                for (int x = orig_X + 1; x < 8; ++x)
+                {
+                    if (HFlag == false && UpFlag == false && DownFlag == false)
+                    {
+                        break;
+                    }
+
+                    if (HFlag)
+                    {
+                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        {
+                            if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            }
+                            HFlag = false;
+                        }
+                        else
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                    }
+                    if (UpFlag)
+                    {
+                        ++yUp;
+                        if (yUp < 8)
+                        {
+                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                }
+                                UpFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                            }
+                        }
+                        else
+                        {
+                            UpFlag = false;
+                        }
+                    }
+                    if (DownFlag)
+                    {
+                        --yDown;
+                        if (yDown >= 0)
+                        {
+
+                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                }
+                                DownFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                            }
+                        }
+                        else
+                        {
+                            DownFlag = false;
+                        }
+                    }
+                }
+                #endregion
+
+                #region Handling Movement to the Left
+                yUp = orig_Y;
+                yDown = orig_Y;
+                UpFlag = true; // Flags set true means we can continue this direction
+                DownFlag = true;
+                HFlag = true; // Horizontal movement flag
+                for (int x = orig_X - 1; x >= 0; --x)
+                {
+                    if (HFlag == false && UpFlag == false && DownFlag == false)
+                    {
+                        break;
+                    }
+
+                    if (HFlag)
+                    {
+                        if (board.RawBoard[x, orig_Y] != ChessPiece.Empty)
+                        {
+                            if (board.RawBoard[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                            }
+                            HFlag = false;
+                        }
+                        else
+                        {
+                            movelist.Add(new ChessMove(position, new ChessLocation(x, orig_Y)));
+                        }
+                    }
+                    if (UpFlag)
+                    {
+                        ++yUp;
+                        if (yUp < 8)
+                        {
+                            if (board.RawBoard[x, yUp] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                                }
+                                UpFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yUp)));
+                            }
+                        }
+                        else
+                        {
+                            UpFlag = false;
+                        }
+                    }
+                    if (DownFlag)
+                    {
+                        --yDown;
+                        if (yDown >= 0)
+                        {
+
+                            if (board.RawBoard[x, yDown] != ChessPiece.Empty)
+                            {
+                                if (board.RawBoard[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                {
+                                    movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                                }
+                                DownFlag = false;
+                            }
+                            else
+                            {
+                                movelist.Add(new ChessMove(position, new ChessLocation(x, yDown)));
+                            }
+                        }
+                        else
+                        {
+                            DownFlag = false;
+                        }
+                    }
+                }
+                #endregion
             }
 
             return movelist;
-        } 
+        }
         #endregion
 
         #region Knight Moves
