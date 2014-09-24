@@ -5,3 +5,10 @@ C:\Users\Kenny\Desktop\2014UvsChess\StudentAI\bin\x86\Debug\UvsChess.pdb
 C:\Users\Kenny\Desktop\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.csprojResolveAssemblyReference.cache
 C:\Users\Kenny\Desktop\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.dll
 C:\Users\Kenny\Desktop\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\StudentAI.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\StudentAI.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Debug\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.csprojResolveAssemblyReference.cache
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.dll
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.pdb

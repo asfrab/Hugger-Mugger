@@ -24,13 +24,15 @@ namespace StudentAI {
 
             StudentAI derp = new StudentAI();
                 ChessMove move;
-                ChessBoard board = new ChessBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+                ChessBoard board = new ChessBoard("rnbqkbnr/8/8/8/8/2p5/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
                 ChessColor color = ChessColor.Black;
             do { 
                 move = derp.GetNextMove(board, color);
-                ChessPiece temp = board[move.From];
-                board[move.From] = board[move.To];
-                board[move.To] = temp;
+                board.MakeMove(move);
+                //ChessPiece temp = board[move.From];
+                //board[move.From] = board[move.To];
+                //board[move.To] = temp;
+                color = color == ChessColor.Black ? ChessColor.White : ChessColor.Black;
             } while (move.Flag != ChessFlag.Stalemate);
             }
     }

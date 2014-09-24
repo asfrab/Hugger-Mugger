@@ -14,3 +14,5 @@ C:\Users\10006678\Documents\Courses\CS 4470\Labs\Chess Lab\2014UvsChess\Framewor
 C:\Users\10006678\Documents\Courses\CS 4470\Labs\Chess Lab\2014UvsChess\Framework\obj\x86\Debug\UvsChess.pdb
 C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Debug\UvsChess.exe
 C:\Users\Kenny\Desktop\2014UvsChess\Framework\obj\x86\Debug\UvsChess.pdb
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.exe
+C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.pdb
