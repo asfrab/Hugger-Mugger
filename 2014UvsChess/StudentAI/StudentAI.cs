@@ -1539,10 +1539,10 @@ namespace StudentAI
             before.MakeMove(move);
             return isCheckHelper(before, color, move);
         }
-        
+
         public int isCheckHelper(ChessBoard before, ChessColor color, ChessMove move)
         {
-            
+
             int x = 0;
             int y = 0;
             int checkValue = 0;
@@ -1768,7 +1768,7 @@ namespace StudentAI
                                                     break;
                                                 case ChessPiece.BlackPawn:
                                                 case ChessPiece.BlackKing:
-                                                    if (tempx - x == 1 && tempy - x == 1)
+                                                    if (tempx - x == 1 && y - tempy == 1)
                                                     {
                                                         check = true;
                                                     }
@@ -2133,7 +2133,7 @@ namespace StudentAI
                                                     check = true;
                                                     break;
                                                 case ChessPiece.WhiteKing:
-                                                    if (tempx - x == 1 && tempy - x == 1)
+                                                    if (tempx - x == 1 && tempy - y == 1)
                                                     {
                                                         check = true;
                                                     }
