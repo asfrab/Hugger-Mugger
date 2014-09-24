@@ -34,56 +34,8 @@ namespace StudentAI
         /// <param name="yourColor">Your color</param>
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor) {
-            if (myPieces == null) {
-                myColorForDict = myColor;
-                myPieces = new Dictionary<ChessLocation, ChessPiece>();
-                theirPieces = new Dictionary<ChessLocation, ChessPiece>();
-                for (int x = 0; x < 8; ++x) {
-                    for (int y = 0; y < 8; ++y) {
-                        if (board[x, y] != ChessPiece.Empty) {
-                            if ((board[x, y] - ChessPiece.Empty) * ((int)myColor * 2 - 1) > 0) {
-                                theirPieces.Add(new ChessLocation(x, y), board[x, y]);
-                            }
-                            else {
-                                myPieces.Add(new ChessLocation(x, y), board[x, y]);
-                            }
-                        }
-                    }
-                }
-            }
-            if(myColor != myColorForDict)
-            {
-                //it's getting the move set for the other color.  Switch the saved pieces.
-                var temp = myPieces;
-                myPieces = theirPieces;
-                theirPieces = temp;
-                myColorForDict = myColor;
-            }
-            List<ChessMove> possibleMoves = new List<ChessMove>();
 
-            foreach (var piece in myPieces) {
-                switch ((int)(piece.Value + 1) % 7) {
-                    case 1: // Pawn
-                        possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
-                        break;
-                    case 2: // Rook
-                        possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
-                        break;
-                    case 3: // Knight
-                        possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
-                        break;
-                    case 4: // Bishop
-                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
-                        break;
-                    case 5: // Queen
-                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
-                        break;
-                    case 6: // King
-                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
-                        break;
-                }
-            }
-
+            List<ChessMove> possibleMoves = getPossibleMoves(board, myColor);
             ChessMove moveToMake;
             ChessPiece pieceToMove;
 
@@ -142,20 +94,94 @@ namespace StudentAI
         /// <param name="moveToCheck">This is the move that needs to be checked to see if it's valid.</param>
         /// <param name="colorOfPlayerMoving">This is the color of the player who's making the move.</param>
         /// <returns>Returns true if the move was valid</returns>
-        public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving) {
-            // Change the position of the opponents piece in local collection 
-            if (myPieces != null) {
-                ChessPiece temp = theirPieces[moveToCheck.From];
-                theirPieces.Add(moveToCheck.To, temp);
-                theirPieces.Remove(moveToCheck.From);
+        public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
+        {
+            List<ChessMove> possibleMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving);            
+            var tempDict = myPieces;
+            myPieces = theirPieces;
+            theirPieces = tempDict;
+            myColorForDict = colorOfPlayerMoving;
+            if (possibleMoves.Contains(moveToCheck))
+            {
+                // Change the position of the opponents piece in local collection 
+                if (myPieces != null)
+                {
+                    ChessPiece temp = theirPieces[moveToCheck.From];
+                    theirPieces.Add(moveToCheck.To, temp);
+                    theirPieces.Remove(moveToCheck.From);
 
-                // If they attacked our piece, remove it from local collection
-                if (myPieces.TryGetValue(moveToCheck.To, out temp)) {
-                    myPieces.Remove(moveToCheck.To);
+                    // If they attacked our piece, remove it from local collection
+                    if (myPieces.TryGetValue(moveToCheck.To, out temp))
+                    {
+                        myPieces.Remove(moveToCheck.To);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private List<ChessMove> getPossibleMoves(ChessBoard board, ChessColor myColor)
+        {
+            if (myPieces == null)
+            {
+                myColorForDict = myColor;
+                myPieces = new Dictionary<ChessLocation, ChessPiece>();
+                theirPieces = new Dictionary<ChessLocation, ChessPiece>();
+                for (int x = 0; x < 8; ++x)
+                {
+                    for (int y = 0; y < 8; ++y)
+                    {
+                        if (board[x, y] != ChessPiece.Empty)
+                        {
+                            if ((board[x, y] - ChessPiece.Empty) * ((int)myColor * 2 - 1) > 0)
+                            {
+                                theirPieces.Add(new ChessLocation(x, y), board[x, y]);
+                            }
+                            else
+                            {
+                                myPieces.Add(new ChessLocation(x, y), board[x, y]);
+                            }
+                        }
+                    }
                 }
             }
-            return true;
-        } 
+            if (myColor != myColorForDict)
+            {
+                //it's getting the move set for the other color.  Switch the saved pieces.
+                var temp = myPieces;
+                myPieces = theirPieces;
+                theirPieces = temp;
+                myColorForDict = myColor;
+            }
+            List<ChessMove> possibleMoves = new List<ChessMove>();
+
+            foreach (var piece in myPieces)
+            {
+                switch ((int)(piece.Value + 1) % 7)
+                {
+                    case 1: // Pawn
+                        possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
+                        break;
+                    case 2: // Rook
+                        possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
+                        break;
+                    case 3: // Knight
+                        possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
+                        break;
+                    case 4: // Bishop
+                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
+                        break;
+                    case 5: // Queen
+                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
+                        break;
+                    case 6: // King
+                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
+                        break;
+                }
+            }
+            return possibleMoves;
+        }
         #endregion
 
         #region Pawn Moves
