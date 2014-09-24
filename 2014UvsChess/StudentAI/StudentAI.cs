@@ -106,9 +106,9 @@ namespace StudentAI
                 }
                 if (pos > 0)
                 {
-                    Random rand = new Random();
+                Random rand = new Random();
                     int indexOfMove = rand.Next(pos);
-                    moveToMake = possibleMoves[indexOfMove];
+                moveToMake = possibleMoves[indexOfMove];
                 }
                 else
                 {
@@ -116,6 +116,10 @@ namespace StudentAI
                 }
                 // Change position of our piec in local collection
                 pieceToMove = myPieces[moveToMake.From];
+                
+                if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
+                    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
+                }
                 myPieces.Add(moveToMake.To, pieceToMove);
                 myPieces.Remove(moveToMake.From);
 
