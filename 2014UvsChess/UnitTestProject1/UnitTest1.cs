@@ -31,10 +31,6 @@ namespace StudentAI {
             do { 
                 move = derp.GetNextMove(board, color);
                 board.MakeMove(move);
-                //ChessPiece temp = board[move.From];
-                //board[move.From] = board[move.To];
-                //board[move.To] = temp;
-                color = color == ChessColor.Black ? ChessColor.White : ChessColor.Black;
             } while (move.Flag != ChessFlag.Stalemate);
             }
     }
