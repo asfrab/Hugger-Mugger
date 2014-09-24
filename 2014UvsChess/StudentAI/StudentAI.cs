@@ -162,22 +162,22 @@ namespace StudentAI
                 switch ((int)(piece.Value + 1) % 7)
                 {
                     case 1: // Pawn
-                        possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
+                        //possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
                         break;
                     case 2: // Rook
-                        possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
+                        //possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
                         break;
                     case 3: // Knight
                         possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
                         break;
                     case 4: // Bishop
-                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
+                        //possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
                         break;
                     case 5: // Queen
-                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
+                        //possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
                         break;
                     case 6: // King
-                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
+                        //possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
                         break;
                 }
             }
@@ -1080,20 +1080,23 @@ namespace StudentAI
         ///  The possible moves are broken up into columns.  2 to left; 1 to left; 1 to right; 2 to right</summary>
         public List<ChessMove> KnightMoves(ChessBoard board, ChessLocation position, ChessColor color) {
             List<ChessMove> moves = new List<ChessMove>();
-            if (position.X > 0) { // Can I move to the left?
-                if (position.X > 1) { // Can I move 2 to the left?
-                    if (position.Y > 0) { // Can I move up 1?
-                        if ((board[position.X - 2, position.Y - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(position.X - 2, position.Y - 1));
+            int positionX = position.X;
+            int positionY = position.Y;
+
+            if (positionX > 0) { // Can I move to the left?
+                if (positionX > 1) { // Can I move 2 to the left?
+                    if (positionY > 0) { // Can I move up 1?
+                        if ((board[positionX - 2, positionY - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY - 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
                             }
                         }
                     }
 
-                    if (position.Y < 7) { // Can I move down 1?
-                        if ((board[position.X - 2, position.Y + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(position.X - 2, position.Y + 1));
+                    if (positionY < 7) { // Can I move down 1?
+                        if ((board[positionX - 2, positionY + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY + 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
                             }
@@ -1101,18 +1104,18 @@ namespace StudentAI
                     }
                 }
 
-                if (position.Y > 1) { // Can I move up 2?
-                    if ((board[position.X - 1, position.Y - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(position.X - 1, position.Y - 2));
+                if (positionY > 1) { // Can I move up 2?
+                    if ((board[positionX - 1, positionY - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY - 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
                         }
                     }
                 }
 
-                if (position.Y < 6) { // Can I move down 2?
-                    if ((board[position.X - 1, position.Y + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(position.X - 1, position.Y + 2));
+                if (positionY < 6) { // Can I move down 2?
+                    if ((board[positionX - 1, positionY + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY + 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
                         }
@@ -1120,20 +1123,20 @@ namespace StudentAI
                 }
             }
 
-            if (position.X < 7) { // Can I move to the right?
-                if (position.X < 6) { // Can I move 2 to the right?
-                    if (position.Y > 0) { // Can I move up 1?
-                        if ((board[position.X + 2, position.Y - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(position.X + 2, position.Y - 1));
+            if (positionX < 7) { // Can I move to the right?
+                if (positionX < 6) { // Can I move 2 to the right?
+                    if (positionY > 0) { // Can I move up 1?
+                        if ((board[positionX + 2, positionY - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY - 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
                             }
                         }
                     }
 
-                    if (position.Y < 7) { // Can I move down 1?
-                        if ((board[position.X + 2, position.Y + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(position.X + 2, position.Y + 1));
+                    if (positionY < 7) { // Can I move down 1?
+                        if ((board[positionX + 2, positionY + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY + 1));
                             if (isCheck(board, move, color) >= 0) {
                                 moves.Add(move);
                             }
@@ -1141,18 +1144,18 @@ namespace StudentAI
                     }
                 }
 
-                if (position.Y > 1) { // Can I move up 2?
-                    if ((board[position.X + 1, position.Y - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(position.X + 1, position.Y - 2));
+                if (positionY > 1) { // Can I move up 2?
+                    if ((board[positionX + 1, positionY - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY - 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
                         }
                     }
                 }
 
-                if (position.Y < 6) { // Can I move down 2?
-                    if ((board[position.X + 1, position.Y + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(position.X + 1, position.Y + 2));
+                if (positionY < 6) { // Can I move down 2?
+                    if ((board[positionX + 1, positionY + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY + 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
                         }
