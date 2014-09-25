@@ -28,3 +28,15 @@ C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\Framework
 C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.GuiDecisionTree.resources
 C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.MessageBox.resources
 C:\Users\Brendan\Desktop\UVU Courses\CS4470\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\Framework.csproj.GenerateResource.Cache
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.exe
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.pdb
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\UvsChess.exe
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\UvsChess.pdb
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\Framework.csprojResolveAssemblyReference.cache
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.GuiChessBoard.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.WinGui.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.AboutUvsChess.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.Preferences.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.GuiDecisionTree.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.MessageBox.resources
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\Framework.csproj.GenerateResource.Cache
