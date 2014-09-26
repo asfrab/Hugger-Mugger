@@ -81,21 +81,21 @@ namespace StudentAI
                     moveToMake = possibleMoves[0];
                 }
                 // Change position of our piec in local collection
-                pieceToMove = myPieces[moveToMake.From];
+                //pieceToMove = myPieces[moveToMake.From];
                 
-                if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
-                    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
-                }
-                myPieces.Add(moveToMake.To, pieceToMove);
-                myPieces.Remove(moveToMake.From);
+                //if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
+                //    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
+                //}
+                //myPieces.Add(moveToMake.To, pieceToMove);
+                //myPieces.Remove(moveToMake.From);
 
-                // If we attacked their piece, remove it from collection
-                if (theirPieces.TryGetValue(moveToMake.To, out pieceToMove)) {
-                    theirPieces.Remove(moveToMake.To);
-                }
+                //// If we attacked their piece, remove it from collection
+                //if (theirPieces.TryGetValue(moveToMake.To, out pieceToMove)) {
+                //    theirPieces.Remove(moveToMake.To);
+                //}
             }
             else { // No moves left.  Declare stalemate
-                moveToMake = new ChessMove(new ChessLocation(1, 1), new ChessLocation(1, 1), ChessFlag.Stalemate);
+                moveToMake = new ChessMove(null, null, ChessFlag.Stalemate);
             }
 
             return moveToMake;
@@ -132,18 +132,18 @@ namespace StudentAI
             if (possibleMoves.Contains(moveToCheck))
             {
                 // Change the position of the opponents piece in local collection 
-                if (myPieces != null)
-                {
-                    ChessPiece temp = theirPieces[moveToCheck.From];
-                    theirPieces.Add(moveToCheck.To, temp);
-                    theirPieces.Remove(moveToCheck.From);
+                //if (myPieces != null)
+                //{
+                //    ChessPiece temp = theirPieces[moveToCheck.From];
+                //    theirPieces.Add(moveToCheck.To, temp);
+                //    theirPieces.Remove(moveToCheck.From);
 
-                    // If they attacked our piece, remove it from local collection
-                    if (myPieces.TryGetValue(moveToCheck.To, out temp))
-                    {
-                        myPieces.Remove(moveToCheck.To);
-                    }
-                }
+                //    // If they attacked our piece, remove it from local collection
+                //    if (myPieces.TryGetValue(moveToCheck.To, out temp))
+                //    {
+                //        myPieces.Remove(moveToCheck.To);
+                //    }
+                //}
                 return true;
             }
             return false;
