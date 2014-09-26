@@ -4,6 +4,7 @@ using StudentAI;
 using UvsChess;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace StudentAI {
     [TestClass]
@@ -17,7 +18,7 @@ namespace StudentAI {
             StudentAI derp = new StudentAI();
             StudentAI derp2 = new StudentAI();
             ChessMove move;
-            ChessBoard board = new ChessBoard("rn1qk1nr/PPPPPPPP/4b1b1/8/8/B1B5/pppppppp/RN1QK1NR w KQkq - 0 1");
+            ChessBoard board = new ChessBoard(FRESH_FEN);//"rn1qk1nr/PPPPPPPP/4b1b1/8/8/B1B5/pppppppp/RN1QK1NR w KQkq - 0 1");
             ChessColor color = ChessColor.Black;
             int i = 0;
 
@@ -50,12 +51,12 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
             foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
-                board = new ChessBoard("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 locToTest = new ChessLocation(0, 0);
@@ -110,11 +111,11 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
-            board = new ChessBoard("1K2k3/8/8/8/8/8/8/8 w KQkq - 0 1");
+            board = FenToModifiedFen("1K2k3/8/8/8/8/8/8/8 w KQkq - 0 1");
             for (int y = 1; y < 7; ++y) {
                 for (int x = 0; x < 8; ++x) {
                     locToTest = new ChessLocation(x, y);
@@ -127,7 +128,7 @@ namespace StudentAI {
                 }
             }
 
-            board = new ChessBoard("8/8/8/8/8/8/8/1K2k3 w KQkq - 0 1");
+            board = FenToModifiedFen("8/8/8/8/8/8/8/1K2k3 w KQkq - 0 1");
             for (int y = 6; y < 0; --y) {
                 for (int x = 0; x < 8; ++x) {
                     locToTest = new ChessLocation(x, y);
@@ -151,12 +152,12 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
             foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
-                board = new ChessBoard("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 locToTest = new ChessLocation(0, 0);
@@ -214,12 +215,12 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
             foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
-                board = new ChessBoard("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 locToTest = new ChessLocation(0, 0);
@@ -293,15 +294,15 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
             foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
-                board = new ChessBoard("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
-                board = new ChessBoard(color == ChessColor.White ? "8/8/7p/1K5k/8/8/8/8 w KQkq - 0 1" : "8/8/7P/1k5K/8/8/8/8 w KQkq");
+                board = FenToModifiedFen(color == ChessColor.White ? "8/8/6pp/1K4pk/6pp/8/8/8 w KQkq - 0 1" : "8/8/6PP/1k4PK/6PP/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 0);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -311,7 +312,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard(color == ChessColor.White ? "8/8/p7/k5K1/8/8/8/8 w KQkq - 0 1" : "8/8/P7/K5k1/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen(color == ChessColor.White ? "8/8/p7/k5K1/8/8/8/8 w KQkq - 0 1" : "8/8/P7/K5k1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 0);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -321,7 +322,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard(color == ChessColor.White ? "8/8/1K5k/7p/8/8/8/8 w KQkq - 0 1" : "8/8/1k5K/7P/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen(color == ChessColor.White ? "8/8/1K5k/7p/8/8/8/8 w KQkq - 0 1" : "8/8/1k5K/7P/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 7);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -331,7 +332,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard(color == ChessColor.White ? "8/8/k5K1/p7/8/8/8/8 w KQkq - 0 1" : "8/8/K5k1/P7/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen(color == ChessColor.White ? "8/8/k5K1/p7/8/8/8/8 w KQkq - 0 1" : "8/8/K5k1/P7/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 7);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -343,7 +344,7 @@ namespace StudentAI {
                 #endregion
 
                 #region Center
-                board = new ChessBoard(color == ChessColor.White ? "1rkp2K1/2pp4/8/8/4Q3/8/8/8 w KQkq - 0 1" : "1RKP2k1/2PP4/8/8/4q3/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen(color == ChessColor.White ? "1rkp2K1/2pp4/8/8/4Q3/8/8/8 w KQkq - 0 1" : "1RKP2k1/2PP4/8/8/4q3/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -377,15 +378,15 @@ namespace StudentAI {
             List<ChessMove> expected = new List<ChessMove>();
             List<ChessMove> moves = new List<ChessMove>();
 
-            ChessBoard board;
+            string board;
             ChessLocation locToTest;
 
             #region BlankBoard
             foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
-                board = new ChessBoard("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
-                board = new ChessBoard("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -393,7 +394,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/1k3K1/8/8/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/1k3K2/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -401,7 +402,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/1k3K1/8/8/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/1k3K2/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -409,7 +410,7 @@ namespace StudentAI {
                 }
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 8; ++i) {
@@ -419,7 +420,7 @@ namespace StudentAI {
                 #endregion
 
                 #region Sides
-                board = new ChessBoard("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 3);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -429,7 +430,7 @@ namespace StudentAI {
                 expected.Add(CreateMove(locToTest, 4, 7));
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -439,7 +440,7 @@ namespace StudentAI {
                 expected.Add(CreateMove(locToTest, 0, 4));
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 4);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -449,7 +450,7 @@ namespace StudentAI {
                 expected.Add(CreateMove(locToTest, 3, 0));
                 CompareMoveLists(expected, moves);
 
-                board = new ChessBoard("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
+                board = FenToModifiedFen("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(3, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -461,7 +462,7 @@ namespace StudentAI {
                 #endregion
 
                 #region Center
-                board = new ChessBoard("8/4k3/8/8/8/8/8/4K3 w KQkq - 0 1");
+                board = FenToModifiedFen("8/4k3/8/8/8/8/8/4K3 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.BishopMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
@@ -495,10 +496,24 @@ namespace StudentAI {
 
             foreach (ChessMove expectedMove in expected) {
                 if (!actual.Contains(expectedMove))
-                    throw new Exception(string.Format("Could not find move: [{0},{1}] to [{2},{3}]", expectedMove.From.X, expectedMove.From.Y, expectedMove.To.Y, expectedMove.To.Y));
+                    throw new Exception(string.Format("Could not find move: [{0},{1}] to [{2},{3}]", expectedMove.From.X, expectedMove.From.Y, expectedMove.To.X, expectedMove.To.Y));
             }
 
             return true;
+        }
+
+        public string FenToModifiedFen(string fenString) {
+            StringBuilder modifiedFen = new StringBuilder(fenString.Substring(0, fenString.IndexOf(' ')).Replace("/", ""));
+            for (int i = 0; i < 64; ++i) {
+                if (char.IsDigit(modifiedFen[i])) {
+                    int num = int.Parse(modifiedFen[i].ToString());
+                    string st = new String('_', num);
+                    modifiedFen.Insert(i + 1, new String('_', num));
+                    modifiedFen.Remove(i, 1);
+                    i += num - 1;
+                }
+            }
+            return modifiedFen.ToString();
         }
         #endregion
 
@@ -509,7 +524,7 @@ namespace StudentAI {
 
             List<ChessMove> moves = new List<ChessMove>();
 
-            moves = derp.BishopMoves(new ChessBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"), new ChessLocation(1, 4), ChessColor.White);
+            moves = derp.QueenMoves(FenToModifiedFen(EMPTY_BOARD), new ChessLocation(2, 0), ChessColor.White);
             //Debug.Assert(moves.Contains(new ChessMove(new ChessLocation(1,7),  new ChessLocation(0, 5))),
             //                            new ChessMove(new ChessLocation(1,7),  new ChessLocation(2, 5))};
         }

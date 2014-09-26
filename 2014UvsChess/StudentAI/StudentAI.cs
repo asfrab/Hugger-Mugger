@@ -22,6 +22,9 @@ namespace StudentAI
         }
 
         #region Main Methods
+        string ModifiedFen = "rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR";
+        const char EMPTY_SPACE = '_';
+
         Dictionary<ChessLocation, ChessPiece> myPieces;
         Dictionary<ChessLocation, ChessPiece> theirPieces;
         ChessColor myColorForDict;
@@ -118,6 +121,9 @@ namespace StudentAI
                 moveToMake = new ChessMove(null, null, ChessFlag.Stalemate);
             }
 
+            if (moveToMake.From != null)
+                ModifiedFen = MakeMove(moveToMake);
+
             return moveToMake;
         }
 
@@ -149,6 +155,7 @@ namespace StudentAI
             myPieces = theirPieces;
             theirPieces = tempDict;
             myColorForDict = colorOfPlayerMoving;
+
             if (possibleMoves.Contains(moveToCheck))
             {
                 // Change the position of the opponents piece in local collection 
@@ -164,6 +171,8 @@ namespace StudentAI
                 //        myPieces.Remove(moveToCheck.To);
                 //    }
                 //}
+                ModifiedFen = MakeMove(moveToCheck);
+
                 return true;
             }
             return false;
@@ -171,72 +180,84 @@ namespace StudentAI
 
         private List<ChessMove> getPossibleMoves(ChessBoard board, ChessColor myColor)
         {
-            myPieces = null;
-            if (myPieces == null)
-            {
-                myColorForDict = myColor;
-                myPieces = new Dictionary<ChessLocation, ChessPiece>();
-                theirPieces = new Dictionary<ChessLocation, ChessPiece>();
-                for (int x = 0; x < 8; ++x)
-                {
-                    for (int y = 0; y < 8; ++y)
-                    {
-                        if (board[x, y] != ChessPiece.Empty)
-                        {
-                            if ((board[x, y] - ChessPiece.Empty) * ((int)myColor * 2 - 1) > 0)
-                            {
-                                theirPieces.Add(new ChessLocation(x, y), board[x, y]);
-                            }
-                            else
-                            {
-                                myPieces.Add(new ChessLocation(x, y), board[x, y]);
-                            }
+            List<ChessMove> possibleMoves = new List<ChessMove>();
+            if (myColor == ChessColor.White) {
+                for (int i = 0; i < 64; ++i) {
+                    if (ModifiedFen[i] != '_' && char.IsUpper(ModifiedFen[i])) {
+                        switch (ModifiedFen[i]) {
+                            case 'P': // Pawn
+                                possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'R': // Rook
+                                possibleMoves.AddRange(RookMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'N': // Knight
+                                possibleMoves.AddRange(KnightMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'B': // Bishop
+                                possibleMoves.AddRange(BishopMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'Q': // Queen
+                                possibleMoves.AddRange(QueenMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'K': // King
+                                possibleMoves.AddRange(KingMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
                         }
                     }
                 }
             }
-            if (myColor != myColorForDict)
-            {
-                //it's getting the move set for the other color.  Switch the saved pieces.
-                var temp = myPieces;
-                myPieces = theirPieces;
-                theirPieces = temp;
-                myColorForDict = myColor;
-            }
-            List<ChessMove> possibleMoves = new List<ChessMove>();
-
-            foreach (var piece in myPieces)
-            {
-                switch ((int)(piece.Value + 1) % 7)
-                {
-                    case 1: // Pawn
-                        possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
-                        break;
-                    case 2: // Rook
-                        possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
-                        break;
-                    case 3: // Knight
-                        possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
-                        break;
-                    case 4: // Bishop
-                        possibleMoves.AddRange(BishopMoves(board, piece.Key, myColor));
-                        break;
-                    case 5: // Queen
-                        possibleMoves.AddRange(QueenMoves(board, piece.Key, myColor));
-                        break;
-                    case 6: // King
-                        possibleMoves.AddRange(KingMoves(board, piece.Key, myColor));
-                        break;
+            else {
+                for (int i = 0; i < 64; ++i) {
+                    if (ModifiedFen[i] != '_' && char.IsLower(ModifiedFen[i])) {
+                        switch (ModifiedFen[i]) {
+                            case 'p': // Pawn
+                                possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'r': // Rook
+                                possibleMoves.AddRange(RookMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'n': // Knight
+                                possibleMoves.AddRange(KnightMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'b': // Bishop
+                                possibleMoves.AddRange(BishopMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'q': // Queen
+                                possibleMoves.AddRange(QueenMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                            case 'k': // King
+                                possibleMoves.AddRange(KingMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                break;
+                        }
+                    }
                 }
+
             }
-            
             return possibleMoves;
         }
         #endregion
 
-        #region Pawn Moves
+        #region Fen Methods
+        public string MakeMove(ChessMove move) {
+            StringBuilder newFen = new StringBuilder(ModifiedFen);
+            int fromIndex = move.From.X % 8  + move.From.Y * 8;
+            int toIndex = move.To.X % 8 + move.To.Y * 8;
+            newFen[toIndex] = ModifiedFen[fromIndex];
+            newFen[fromIndex] = '_';
+            if (toIndex < 8 && newFen[toIndex] == 'P') {
+                newFen[toIndex] = 'Q';
+            }
+            else if (toIndex >= 56 && newFen[toIndex] == 'p') {
+                newFen[toIndex] = 'q';
+            }
+            //this.Log(newFen.ToString());
+            return newFen.ToString();
+        }
+        #endregion
 
-        public List<ChessMove> PawnMoves(ChessBoard board, ChessLocation location, ChessColor color)
+        #region Pawn Moves
+        public List<ChessMove> PawnMoves(string board, ChessLocation location, ChessColor color)
         {
             List<ChessMove> moves = new List<ChessMove>();
             ChessMove newMove;
@@ -246,20 +267,20 @@ namespace StudentAI
             {
                 if (X == 0)
                 {
-                    if (board[X + 1, Y - 1] < ChessPiece.Empty) //take the enemy piece
+                    if (board[(X + 1) % 8 + (Y - 1) * 8] < '_') //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y - 1] == ChessPiece.Empty)
+                    if (board[X % 8 + (Y- 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[X, Y - 2] == ChessPiece.Empty)
+                            if (board[X % 8 + (Y- 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -267,20 +288,20 @@ namespace StudentAI
                 }
                 else if (X == 7)
                 {
-                    if (board[X - 1, Y - 1] < ChessPiece.Empty) //take the enemy piece
+                    if (board[(X - 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y - 1] == ChessPiece.Empty)
+                    if (board[(X) % 8 + (Y- 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[X, Y - 2] == ChessPiece.Empty)
+                            if (board[(X) % 8 + (Y- 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -288,27 +309,27 @@ namespace StudentAI
                 }
                 else
                 {
-                    if (board[X - 1, Y - 1] < ChessPiece.Empty)// take the enemy piece
+                    if (board[(X - 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE)// take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y - 1] == ChessPiece.Empty)
+                    if (board[(X) % 8 + (Y- 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[X, Y - 2] == ChessPiece.Empty)
+                            if (board[(X) % 8 + (Y- 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
                     }
-                    if (board[X + 1, Y - 1] < ChessPiece.Empty) // take the enemy piece
+                    if (board[(X + 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE) // take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y - 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y- 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
                 }
@@ -317,20 +338,20 @@ namespace StudentAI
             {
                 if (X == 0)
                 {
-                    if (board[X + 1, Y + 1] > ChessPiece.Empty) //take the enemy piece
+                    if (board[(X + 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y + 1] == ChessPiece.Empty)
+                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[X, Y + 2] == ChessPiece.Empty)
+                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -338,20 +359,20 @@ namespace StudentAI
                 }
                 else if (X == 7)
                 {
-                    if (board[X - 1, Y + 1] > ChessPiece.Empty) //take the enemy piece
+                    if (board[(X - 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y + 1] == ChessPiece.Empty)
+                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[X, Y + 2] == ChessPiece.Empty)
+                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -359,27 +380,27 @@ namespace StudentAI
                 }
                 else
                 {
-                    if (board[X - 1, Y + 1] > ChessPiece.Empty)// take the enemy piece
+                    if (board[(X - 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE)// take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X, Y + 1] == ChessPiece.Empty)
+                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[X, Y + 2] == ChessPiece.Empty)
+                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
                     }
-                    if (board[X + 1, Y + 1] > ChessPiece.Empty) // take the enemy piece
+                    if (board[(X + 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) // take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y + 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y+ 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
                 }
@@ -390,8 +411,7 @@ namespace StudentAI
         #endregion
 
         #region King Moves
-
-        public List<ChessMove> KingMoves(ChessBoard board, ChessLocation location, ChessColor color)
+        public List<ChessMove> KingMoves(string board, ChessLocation location, ChessColor color)
         {
             List<ChessMove> moves = new List<ChessMove>();
             ChessMove newMove;
@@ -405,7 +425,7 @@ namespace StudentAI
                     {
                         if (i < 0 || i > 7 || j < 0 || j > 7) { continue; } // do nothing
                         if (i == X && j == Y) { continue; } //also, do nothing
-                        if (board[i, j] <= ChessPiece.Empty)
+                        if (board[i % 8 + j * 8] >= EMPTY_SPACE)
                         {
                             newMove = new ChessMove(location, new ChessLocation(i, j));
                             if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
@@ -422,7 +442,7 @@ namespace StudentAI
                     {
                         if (i < 0 || i > 7 || j < 0 || j > 7) { continue; } // do nothing
                         if (i == X && j == Y) { continue; } //also, do nothing
-                        if (board[i, j] >= ChessPiece.Empty)
+                        if (board[i % 8 + j * 8] <= EMPTY_SPACE)
                         {
                             newMove = new ChessMove(location, new ChessLocation(i, j));
                             if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
@@ -441,7 +461,7 @@ namespace StudentAI
         /// <param name="position">Current position of the rook</param>
         /// <param name="color">What color is this rook</param>
         /// <returns>List of all possible, valid, chess moves this rook can make</returns>
-        public List<ChessMove> RookMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        public List<ChessMove> RookMoves(string board, ChessLocation position, ChessColor color)
         {
             int orig_X = position.X;
             int orig_Y = position.Y;
@@ -452,9 +472,9 @@ namespace StudentAI
             {
                 for (int x = orig_X + 1; x < 8; ++x)
                 {
-                    if (board[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + orig_Y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, orig_Y));
                             if (isCheck(board, move, color) >= 0)
@@ -472,9 +492,9 @@ namespace StudentAI
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
-                    if (board[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + orig_Y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, orig_Y));
                             if (isCheck(board, move, color) >= 0)
@@ -492,9 +512,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -512,9 +532,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -535,9 +555,9 @@ namespace StudentAI
             {
                 for (int x = orig_X + 1; x < 8; ++x)
                 {
-                    if (board[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, orig_Y));
                             if (isCheck(board, move, color) >= 0)
@@ -555,9 +575,9 @@ namespace StudentAI
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
-                    if (board[x, orig_Y] != ChessPiece.Empty)
+                    if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, orig_Y));
                             if (isCheck(board, move, color) >= 0)
@@ -575,9 +595,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -595,9 +615,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -624,7 +644,7 @@ namespace StudentAI
         /// <param name="position">Current position of the bishop</param>
         /// <param name="color">What color is this bishop</param>
         /// <returns>List of all possible, valid, chess moves this bishop can make</returns>
-        public List<ChessMove> BishopMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        public List<ChessMove> BishopMoves(string board, ChessLocation position, ChessColor color)
         {
             List<ChessMove> movelist = new List<ChessMove>();
 
@@ -640,9 +660,9 @@ namespace StudentAI
 
                 for (; x < 8 && y < 8; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -667,9 +687,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; x < 8 && y >= 0; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -693,9 +713,9 @@ namespace StudentAI
                 y = orig_Y + 1;
                 for (; x >= 0 && y < 8; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -720,9 +740,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; x >= 0 && y >= 0; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -748,9 +768,9 @@ namespace StudentAI
                 int y = orig_Y + 1;
                 for (; x < 8 && y < 8; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -775,9 +795,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; x < 8 && y >= 0; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -801,9 +821,9 @@ namespace StudentAI
                 y = orig_Y + 1;
                 for (; x >= 0 && y < 8; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -828,9 +848,9 @@ namespace StudentAI
                 y = orig_Y - 1;
                 for (; y >= 0 && x >= 0; )
                 {
-                    if (board[x, y] != ChessPiece.Empty)
+                    if (board[x % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[x, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[x % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(x, y));
                             if (isCheck(board, move, color) >= 0)
@@ -861,7 +881,7 @@ namespace StudentAI
         /// <param name="position">Current position of the queen</param>
         /// <param name="color">What color is this queen</param>
         /// <returns>List of all possible, valid, chess moves this queen can make</returns>
-        public List<ChessMove> QueenMoves(ChessBoard board, ChessLocation position, ChessColor color)
+        public List<ChessMove> QueenMoves(string board, ChessLocation position, ChessColor color)
         {
             List<ChessMove> movelist = new List<ChessMove>();
 
@@ -874,9 +894,9 @@ namespace StudentAI
                 #region Handling Up and Down Movements
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -894,9 +914,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] > ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -929,9 +949,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                         {
-                            if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x % 8 + orig_Y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                             {
                                 move = new ChessMove(position, new ChessLocation(x, orig_Y));
                                 if (isCheck(board, move, color) >= 0)
@@ -955,9 +975,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board[x, yUp] != ChessPiece.Empty)
+                            if (board[x % 8 + yUp * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yUp * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yUp));
                                     if (isCheck(board, move, color) >= 0)
@@ -987,9 +1007,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board[x, yDown] != ChessPiece.Empty)
+                            if (board[x % 8 + yDown * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yDown * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yDown));
                                     if (isCheck(board, move, color) >= 0)
@@ -1031,9 +1051,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                         {
-                            if (board[x, orig_Y] > ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x % 8 + orig_Y * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                             {
                                 move = new ChessMove(position, new ChessLocation(x, orig_Y));
                                 if (isCheck(board, move, color) >= 0)
@@ -1057,9 +1077,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board[x, yUp] != ChessPiece.Empty)
+                            if (board[x % 8 + yUp * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yUp] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yUp * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yUp));
                                     if (isCheck(board, move, color) >= 0)
@@ -1089,9 +1109,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board[x, yDown] != ChessPiece.Empty)
+                            if (board[x % 8 + yDown * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yDown] > ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yDown * 8] < EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yDown));
                                     if (isCheck(board, move, color) >= 0)
@@ -1123,9 +1143,9 @@ namespace StudentAI
                 #region Handling Up and Down Movements
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -1143,9 +1163,9 @@ namespace StudentAI
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
-                    if (board[orig_X, y] != ChessPiece.Empty)
+                    if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
-                        if (board[orig_X, y] < ChessPiece.Empty) // < empty = black | > empty = white
+                        if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                         {
                             move = new ChessMove(position, new ChessLocation(orig_X, y));
                             if (isCheck(board, move, color) >= 0)
@@ -1178,9 +1198,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                         {
-                            if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                             {
                                 move = new ChessMove(position, new ChessLocation(x, orig_Y));
                                 if (isCheck(board, move, color) >= 0)
@@ -1204,9 +1224,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board[x, yUp] != ChessPiece.Empty)
+                            if (board[x % 8 + yUp * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yUp * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yUp));
                                     if (isCheck(board, move, color) >= 0)
@@ -1236,9 +1256,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board[x, yDown] != ChessPiece.Empty)
+                            if (board[x % 8 + yDown * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yDown * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yDown));
                                     if (isCheck(board, move, color) >= 0)
@@ -1280,9 +1300,9 @@ namespace StudentAI
 
                     if (HFlag)
                     {
-                        if (board[x, orig_Y] != ChessPiece.Empty)
+                        if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                         {
-                            if (board[x, orig_Y] < ChessPiece.Empty) // < empty = black | > empty = white
+                            if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                             {
                                 move = new ChessMove(position, new ChessLocation(x, orig_Y));
                                 if (isCheck(board, move, color) >= 0)
@@ -1306,9 +1326,9 @@ namespace StudentAI
                         ++yUp;
                         if (yUp < 8)
                         {
-                            if (board[x, yUp] != ChessPiece.Empty)
+                            if (board[x % 8 + yUp * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yUp] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yUp * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yUp));
                                     if (isCheck(board, move, color) >= 0)
@@ -1338,9 +1358,9 @@ namespace StudentAI
                         if (yDown >= 0)
                         {
 
-                            if (board[x, yDown] != ChessPiece.Empty)
+                            if (board[x % 8 + yDown * 8] != EMPTY_SPACE)
                             {
-                                if (board[x, yDown] < ChessPiece.Empty) // < empty = black | > empty = white
+                                if (board[x % 8 + yDown * 8] > EMPTY_SPACE) // < empty = black | > empty = white
                                 {
                                     move = new ChessMove(position, new ChessLocation(x, yDown));
                                     if (isCheck(board, move, color) >= 0)
@@ -1375,15 +1395,21 @@ namespace StudentAI
         #region Knight Moves
         /// <summary>Returns all valid moves for a knight from a particular position on the board.
         ///  The possible moves are broken up into columns.  2 to left; 1 to left; 1 to right; 2 to right</summary>
-        public List<ChessMove> KnightMoves(ChessBoard board, ChessLocation position, ChessColor color) {
+        public List<ChessMove> KnightMoves(string board, ChessLocation position, ChessColor color) {
             List<ChessMove> moves = new List<ChessMove>();
             int positionX = position.X;
             int positionY = position.Y;
 
+            Predicate<char> isMyPiece;
+            if (color == ChessColor.White)
+                isMyPiece = char.IsUpper;
+            else
+                isMyPiece = char.IsLower;
+
             if (positionX > 0) { // Can I move to the left?
                 if (positionX > 1) { // Can I move 2 to the left?
                     if (positionY > 0) { // Can I move up 1?
-                        if ((board[positionX - 2, positionY - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY - 1) * 8])) { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY - 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
@@ -1392,7 +1418,7 @@ namespace StudentAI
                     }
 
                     if (positionY < 7) { // Can I move down 1?
-                        if ((board[positionX - 2, positionY + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY + 1) * 8])) { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY + 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
@@ -1402,7 +1428,7 @@ namespace StudentAI
                 }
 
                 if (positionY > 1) { // Can I move up 2?
-                    if ((board[positionX - 1, positionY - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY - 2) * 8])) { // Checks if it is the opponents piece
                         ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY - 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
@@ -1411,7 +1437,7 @@ namespace StudentAI
                 }
 
                 if (positionY < 6) { // Can I move down 2?
-                    if ((board[positionX - 1, positionY + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY + 2) * 8])) { // Checks if it is the opponents piece
                         ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY + 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
@@ -1423,7 +1449,7 @@ namespace StudentAI
             if (positionX < 7) { // Can I move to the right?
                 if (positionX < 6) { // Can I move 2 to the right?
                     if (positionY > 0) { // Can I move up 1?
-                        if ((board[positionX + 2, positionY - 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY - 1) * 8])) { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY - 1));
                             if (isCheck(board, move, color) >= 0) {
                             moves.Add(move);
@@ -1432,7 +1458,7 @@ namespace StudentAI
                     }
 
                     if (positionY < 7) { // Can I move down 1?
-                        if ((board[positionX + 2, positionY + 1] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY + 1) * 8])) { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY + 1));
                             if (isCheck(board, move, color) >= 0) {
                                 moves.Add(move);
@@ -1442,7 +1468,7 @@ namespace StudentAI
                 }
 
                 if (positionY > 1) { // Can I move up 2?
-                    if ((board[positionX + 1, positionY - 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY - 2) * 8])) { // Checks if it is the opponents piece
                         ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY - 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
@@ -1451,7 +1477,7 @@ namespace StudentAI
                 }
 
                 if (positionY < 6) { // Can I move down 2?
-                    if ((board[positionX + 1, positionY + 2] - ChessPiece.Empty) * ((int)color * 2 - 1) >= 0) { // Checks if it is the opponents piece
+                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY + 2) * 8])) { // Checks if it is the opponents piece
                         ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY + 2));
                         if (isCheck(board, move, color) >= 0) {
                         moves.Add(move);
@@ -1464,106 +1490,6 @@ namespace StudentAI
         } 
         #endregion
 
-        #region Pawn Moves
-        //This is the old version of the pawn moves.
-        //public List<ChessMove> PawnMoves(ChessBoard board, ChessLocation location, ChessColor color) {
-        //    List<ChessMove> moves = new List<ChessMove>();
-        //    ChessMove newMove;
-        //    if (color == ChessColor.White) {
-        //        if (location.X == 0) {
-        //            if (board[location.X + 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
-        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //        else if (location.X == 7) {
-        //            if (board[location.X - 1, location.Y - 1] < ChessPiece.Empty) //take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
-        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //        else {
-        //            if (board[location.X - 1, location.Y - 1] < ChessPiece.Empty)// take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y - 1));
-        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //            if (board[location.X, location.Y - 1] == ChessPiece.Empty) {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 1));
-        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //                if (location.Y == 6) // pawn is in starting position
-        //                {
-        //                    if (board[location.X, location.Y - 2] == ChessPiece.Empty) {
-        //                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y - 2));
-        //                        if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                        if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //                    }
-        //                }
-        //            }
-        //            if (board[location.X + 1, location.Y - 1] < ChessPiece.Empty) // take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y - 1));
-        //                if (isCheck(board, newMove, ChessColor.White) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.White) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //    }
-        //    else // if color is black
-        //    {
-        //        if (location.X == 0) {
-        //            if (board[location.X + 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
-        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //        else if (location.X == 7) {
-        //            if (board[location.X - 1, location.Y + 1] < ChessPiece.Empty) //take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
-        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //        else {
-        //            if (board[location.X - 1, location.Y + 1] < ChessPiece.Empty)// take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X - 1, location.Y + 1));
-        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //            if (board[location.X, location.Y + 1] == ChessPiece.Empty) {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 1));
-        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //                if (location.Y == 1) // pawn is in starting position
-        //                {
-        //                    if (board[location.X, location.Y + 2] == ChessPiece.Empty) {
-        //                        newMove = new ChessMove(location, new ChessLocation(location.X, location.Y + 2));
-        //                        if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                        if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //                    }
-        //                }
-        //            }
-        //            if (board[location.X + 1, location.Y + 1] < ChessPiece.Empty) // take the enemy piece
-        //            {
-        //                newMove = new ChessMove(location, new ChessLocation(location.X + 1, location.Y + 1));
-        //                if (isCheck(board, newMove, ChessColor.Black) == 0) { moves.Add(newMove); }
-        //                if (isCheck(board, newMove, ChessColor.Black) == 1) { newMove.Flag = ChessFlag.Check; moves.Add(newMove); }
-        //            }
-        //        }
-        //    }
-        //    return moves;
-        //} 
-        #endregion
-
         #region Flag functions
         /// <summary>
         /// 
@@ -1572,14 +1498,12 @@ namespace StudentAI
         /// <param name="move"></param>
         /// <param name="color"></param>
         /// <returns> 0 if no check. -1 if check against color of move, 1 if check for player of move.</returns>
-        public int isCheck(ChessBoard before, ChessMove move, ChessColor color)
+        public int isCheck(string before, ChessMove move, ChessColor color)
         {
-            var newBoard = before.Clone();
-            newBoard.MakeMove(move);
-            return isCheckHelper(newBoard, color, move);
+            return isCheckHelper(MakeMove(move), color, move);
         }
 
-        public int isCheckHelper(ChessBoard before, ChessColor color, ChessMove move)
+        public int isCheckHelper(string before, ChessColor color, ChessMove move)
         {
 
             int x = 0;
@@ -1593,11 +1517,11 @@ namespace StudentAI
             {
                 while (y < 8)//&& (!checkedBlack || !checkedWhite))
                 {
-                    var piece = before[x, y];
+                    char piece = before[x % 8 + y * 8];
                     bool check = false;
                     switch (piece)
                     {
-                        case ChessPiece.WhiteKing:
+                        case 'K':
                             whiteTotal += 100;
                             checkedWhite = true;
                             do
@@ -1610,24 +1534,24 @@ namespace StudentAI
                                     //up
                                     tempx = x;
                                     tempy = y - 1;
-                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up!
                                         tempy--;
                                     }
                                     if (tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackRook:
-                                                case ChessPiece.BlackQueen:
+                                                case 'r':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (y - tempy == 1)
                                                     {
                                                         check = true;
@@ -1645,24 +1569,24 @@ namespace StudentAI
                                     //down
                                     tempx = x;
                                     tempy = y + 1;
-                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving down
                                         tempy++;
                                     }
                                     if (tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackRook:
-                                                case ChessPiece.BlackQueen:
+                                                case 'r':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (tempy - y == 1)
                                                     {
                                                         check = true;
@@ -1680,24 +1604,24 @@ namespace StudentAI
                                     //left
                                     tempx = x - 1;
                                     tempy = y;
-                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving left
                                         tempx--;
                                     }
                                     if (tempx >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackRook:
-                                                case ChessPiece.BlackQueen:
+                                                case 'r':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (x - tempx == 1)
                                                     {
                                                         check = true;
@@ -1715,24 +1639,24 @@ namespace StudentAI
                                     //right
                                     tempx = x + 1;
                                     tempy = y;
-                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving right
                                         tempx++;
                                     }
                                     if (tempx < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackRook:
-                                                case ChessPiece.BlackQueen:
+                                                case 'r':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (tempx - x == 1)
                                                     {
                                                         check = true;
@@ -1750,7 +1674,7 @@ namespace StudentAI
                                     //upleft
                                     tempx = x - 1;
                                     tempy = y - 1;
-                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up left
                                         tempy--;
@@ -1758,18 +1682,18 @@ namespace StudentAI
                                     }
                                     if (tempx >= 0 && tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackBishop:
-                                                case ChessPiece.BlackQueen:
+                                                case 'b':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackPawn:
-                                                case ChessPiece.BlackKing:
+                                                case 'p':
+                                                case 'k':
                                                     if (x - tempx == 1 && y - tempy == 1)
                                                     {
                                                         check = true;
@@ -1787,7 +1711,7 @@ namespace StudentAI
                                     //upright
                                     tempx = x + 1;
                                     tempy = y - 1;
-                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up right
                                         tempy--;
@@ -1795,18 +1719,18 @@ namespace StudentAI
                                     }
                                     if (tempx < 8 && tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackBishop:
-                                                case ChessPiece.BlackQueen:
+                                                case 'b':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackPawn:
-                                                case ChessPiece.BlackKing:
+                                                case 'p':
+                                                case 'k':
                                                     if (tempx - x == 1 && y - tempy == 1)
                                                     {
                                                         check = true;
@@ -1824,7 +1748,7 @@ namespace StudentAI
                                     //downleft
                                     tempx = x - 1;
                                     tempy = y + 1;
-                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving down left
                                         tempy++;
@@ -1832,17 +1756,17 @@ namespace StudentAI
                                     }
                                     if (tempx >= 0 && tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackBishop:
-                                                case ChessPiece.BlackQueen:
+                                                case 'b':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (x - tempx == tempy - y && x - tempx == 1)
                                                     {
                                                         check = true;
@@ -1860,7 +1784,7 @@ namespace StudentAI
                                     //downright
                                     tempx = x + 1;
                                     tempy = y + 1;
-                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving  down right
                                         tempy++;
@@ -1868,17 +1792,17 @@ namespace StudentAI
                                     }
                                     if (tempx < 8 && tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking > EMPTY_SPACE)
                                         {
                                             //this is a black piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.BlackBishop:
-                                                case ChessPiece.BlackQueen:
+                                                case 'b':
+                                                case 'q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.BlackKing:
+                                                case 'k':
                                                     if (tempx - x == tempy - y && tempx - x == 1)
                                                     {
                                                         check = true;
@@ -1901,56 +1825,56 @@ namespace StudentAI
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'n')
                                     {
                                         check = true;
                                         break;
@@ -1964,7 +1888,7 @@ namespace StudentAI
                                 checkValue = color == ChessColor.White ? -1 : 1;
                             }
                             break;
-                        case ChessPiece.BlackKing:
+                        case 'k':
                             blackTotal += 100;
                             checkedBlack = true;
                             do
@@ -1977,24 +1901,24 @@ namespace StudentAI
                                     //up
                                     tempx = x;
                                     tempy = y - 1;
-                                    while (tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up!
                                         tempy--;
                                     }
                                     if (tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteRook:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'R':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (y - tempy == 1)
                                                     {
                                                         check = true;
@@ -2012,24 +1936,24 @@ namespace StudentAI
                                     //down
                                     tempx = x;
                                     tempy = y + 1;
-                                    while (tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving down
                                         tempy++;
                                     }
                                     if (tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteRook:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'R':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (tempy - y == 1)
                                                     {
                                                         check = true;
@@ -2047,24 +1971,24 @@ namespace StudentAI
                                     //left
                                     tempx = x - 1;
                                     tempy = y;
-                                    while (tempx >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving left
                                         tempx--;
                                     }
                                     if (tempx >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteRook:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'R':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (x - tempx == 1)
                                                     {
                                                         check = true;
@@ -2082,24 +2006,24 @@ namespace StudentAI
                                     //right
                                     tempx = x + 1;
                                     tempy = y;
-                                    while (tempx < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving right
                                         tempx++;
                                     }
                                     if (tempx < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteRook:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'R':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (tempx - x == 1)
                                                     {
                                                         check = true;
@@ -2117,7 +2041,7 @@ namespace StudentAI
                                     //upleft
                                     tempx = x - 1;
                                     tempy = y - 1;
-                                    while (tempx >= 0 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up left
                                         tempy--;
@@ -2125,17 +2049,17 @@ namespace StudentAI
                                     }
                                     if (tempx >= 0 && tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteBishop:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'B':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (x - tempx == 1 && y - tempy == 1)
                                                     {
                                                         check = true;
@@ -2153,7 +2077,7 @@ namespace StudentAI
                                     //upright
                                     tempx = x + 1;
                                     tempy = y - 1;
-                                    while (tempx < 8 && tempy >= 0 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && tempy >= 0 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving up right
                                         tempy--;
@@ -2161,17 +2085,17 @@ namespace StudentAI
                                     }
                                     if (tempx < 8 && tempy >= 0)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteBishop:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'B':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhiteKing:
+                                                case 'K':
                                                     if (tempx - x == 1 && tempy - y == 1)
                                                     {
                                                         check = true;
@@ -2189,7 +2113,7 @@ namespace StudentAI
                                     //downleft
                                     tempx = x - 1;
                                     tempy = y + 1;
-                                    while (tempx >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving down left
                                         tempy++;
@@ -2197,18 +2121,18 @@ namespace StudentAI
                                     }
                                     if (tempx >= 0 && tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteBishop:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'B':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhitePawn:
-                                                case ChessPiece.WhiteKing:
+                                                case 'P':
+                                                case 'K':
                                                     if (x - tempx == tempy - y && x - tempx == 1)
                                                     {
                                                         check = true;
@@ -2226,7 +2150,7 @@ namespace StudentAI
                                     //downright
                                     tempx = x + 1;
                                     tempy = y + 1;
-                                    while (tempx < 8 && tempy < 8 && before[tempx, tempy] == ChessPiece.Empty)
+                                    while (tempx < 8 && tempy < 8 && before[tempx % 8 + tempy * 8] == EMPTY_SPACE)
                                     {
                                         //keep moving  down right
                                         tempy++;
@@ -2234,18 +2158,18 @@ namespace StudentAI
                                     }
                                     if (tempx < 8 && tempy < 8)
                                     {
-                                        var attacking = before[tempx, tempy];
-                                        if (attacking > ChessPiece.Empty)
+                                        var attacking = before[tempx % 8 + tempy * 8];
+                                        if (attacking < EMPTY_SPACE)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
                                             {
-                                                case ChessPiece.WhiteBishop:
-                                                case ChessPiece.WhiteQueen:
+                                                case 'B':
+                                                case 'Q':
                                                     check = true;
                                                     break;
-                                                case ChessPiece.WhitePawn:
-                                                case ChessPiece.WhiteKing:
+                                                case 'P':
+                                                case 'K':
                                                     if (tempx - x == tempy - y && tempx - x == 1)
                                                     {
                                                         check = true;
@@ -2268,56 +2192,56 @@ namespace StudentAI
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx % 8 + tempy * 8] == 'N')
                                     {
                                         check = true;
                                         break;
@@ -2331,34 +2255,34 @@ namespace StudentAI
 
                             }
                             break;
-                        case ChessPiece.BlackBishop:
+                        case 'b':
                             blackTotal += 4;
                             break;
-                        case ChessPiece.BlackKnight:
+                        case 'n':
                             blackTotal += 3;
                             break;
-                        case ChessPiece.BlackPawn:
+                        case 'p':
                             blackTotal += 1;
                             break;
-                        case ChessPiece.BlackQueen:
+                        case 'q':
                             blackTotal += 9;
                             break;
-                        case ChessPiece.BlackRook:
+                        case 'r':
                             blackTotal += 5;
                             break;
-                        case ChessPiece.WhiteBishop:
+                        case 'B':
                             whiteTotal += 4;
                             break;
-                        case ChessPiece.WhiteKnight:
+                        case 'N':
                             whiteTotal += 3;
                             break;
-                        case ChessPiece.WhitePawn:
+                        case 'P':
                             whiteTotal += 1;
                             break;
-                        case ChessPiece.WhiteQueen:
+                        case 'Q':
                             whiteTotal += 9;
                             break;
-                        case ChessPiece.WhiteRook:
+                        case 'R':
                             whiteTotal += 5;
                             break;
                         default:

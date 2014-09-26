@@ -32,7 +32,6 @@ C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Deb
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.pdb
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\UvsChess.exe
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\UvsChess.pdb
-C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\Framework.csprojResolveAssemblyReference.cache
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.GuiChessBoard.resources
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.WinGui.resources
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\obj\x86\Debug\UvsChess.Gui.AboutUvsChess.resources
