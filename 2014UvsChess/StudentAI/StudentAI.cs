@@ -36,6 +36,20 @@ namespace StudentAI
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor) {
 
             List<ChessMove> possibleMoves = getPossibleMoves(board, myColor);
+            foreach (ChessMove move in possibleMoves)
+            {
+                if (move.Flag == ChessFlag.Check)
+                {
+                    var movedBoard = board.Clone();
+                    movedBoard.MakeMove(move);
+                    List<ChessMove> opponentMoves = getPossibleMoves(board, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                    if (opponentMoves.Count == 0)
+                    {
+                        move.Flag = ChessFlag.Checkmate;
+                        move.ValueOfMove = int.MaxValue;
+                    }
+                }
+            }
             ChessMove moveToMake;
             ChessPiece pieceToMove;
 
@@ -96,7 +110,21 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            List<ChessMove> possibleMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving);            
+            List<ChessMove> possibleMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving);
+            foreach (ChessMove move in possibleMoves)
+            {
+                if (move.Flag == ChessFlag.Check)
+                {
+                    var movedBoard = boardBeforeMove.Clone();
+                    movedBoard.MakeMove(move);
+                    List<ChessMove> opponentMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                    if (opponentMoves.Count == 0)
+                    {
+                        move.Flag = ChessFlag.Checkmate;
+                        move.ValueOfMove = int.MaxValue;
+                    }
+                }
+            }
             var tempDict = myPieces;
             myPieces = theirPieces;
             theirPieces = tempDict;
@@ -165,7 +193,7 @@ namespace StudentAI
                         possibleMoves.AddRange(PawnMoves(board, piece.Key, myColor));
                         break;
                     case 2: // Rook
-                        //possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
+                        possibleMoves.AddRange(RookMoves(board, piece.Key, myColor));
                         break;
                     case 3: // Knight
                         possibleMoves.AddRange(KnightMoves(board, piece.Key, myColor));
@@ -181,20 +209,7 @@ namespace StudentAI
                         break;
                 }
             }
-            foreach(ChessMove move in possibleMoves)
-            {
-                if(move.Flag == ChessFlag.Check)
-                {
-                    var movedBoard = board.Clone();
-                    movedBoard.MakeMove(move);
-                    List<ChessMove> opponentMoves = getPossibleMoves(board, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-                    if(opponentMoves.Count == 0)
-                    {
-                        move.Flag = ChessFlag.Checkmate;
-                        move.ValueOfMove = int.MaxValue;
-                    }
-                }
-            }
+            
             return possibleMoves;
         }
         #endregion
@@ -1539,9 +1554,9 @@ namespace StudentAI
         /// <returns> 0 if no check. -1 if check against color of move, 1 if check for player of move.</returns>
         public int isCheck(ChessBoard before, ChessMove move, ChessColor color)
         {
-            before = before.Clone();
-            before.MakeMove(move);
-            return isCheckHelper(before, color, move);
+            var newBoard = before.Clone();
+            newBoard.MakeMove(move);
+            return isCheckHelper(newBoard, color, move);
         }
 
         public int isCheckHelper(ChessBoard before, ChessColor color, ChessMove move)
@@ -1985,7 +2000,7 @@ namespace StudentAI
                                     if (tempy < 8)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2020,7 +2035,7 @@ namespace StudentAI
                                     if (tempx >= 0)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2055,7 +2070,7 @@ namespace StudentAI
                                     if (tempx < 8)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2091,7 +2106,7 @@ namespace StudentAI
                                     if (tempx >= 0 && tempy >= 0)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2127,7 +2142,7 @@ namespace StudentAI
                                     if (tempx < 8 && tempy >= 0)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2163,7 +2178,7 @@ namespace StudentAI
                                     if (tempx >= 0 && tempy < 8)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)
@@ -2200,7 +2215,7 @@ namespace StudentAI
                                     if (tempx < 8 && tempy < 8)
                                     {
                                         var attacking = before[tempx, tempy];
-                                        if (attacking < ChessPiece.Empty)
+                                        if (attacking > ChessPiece.Empty)
                                         {
                                             //this is a white piece.
                                             switch (attacking)

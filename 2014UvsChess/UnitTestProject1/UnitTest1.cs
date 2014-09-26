@@ -343,7 +343,7 @@ namespace StudentAI {
                 #endregion
 
                 #region Center
-                board = new ChessBoard(color == ChessColor.White ? "1rkp2K1/2pp4/8/8/8/8/8/8 w KQkq - 0 1" : "1RKP2k1/2PP4/8/8/8/8/8/8 w KQkq - 0 1");
+                board = new ChessBoard(color == ChessColor.White ? "1rkp2K1/2pp4/8/8/4Q3/8/8/8 w KQkq - 0 1" : "1RKP2k1/2PP4/8/8/4q3/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.QueenMoves(board, locToTest, color);
                 for (int i = 1; i < 4; ++i) {
