@@ -38,15 +38,35 @@ namespace StudentAI
             List<ChessMove> possibleMoves = getPossibleMoves(board, myColor);
             foreach (ChessMove move in possibleMoves)
             {
+                var movedBoard = board.Clone();
+                movedBoard.MakeMove(move);
+                List<ChessMove> opponentMoves = getPossibleMoves(board, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
                 if (move.Flag == ChessFlag.Check)
-                {
-                    var movedBoard = board.Clone();
-                    movedBoard.MakeMove(move);
-                    List<ChessMove> opponentMoves = getPossibleMoves(board, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                {     
                     if (opponentMoves.Count == 0)
                     {
                         move.Flag = ChessFlag.Checkmate;
                         move.ValueOfMove = int.MaxValue;
+                    }
+                }
+                else
+                {
+                    if(opponentMoves.Count == 0)
+                    {
+                        move.ValueOfMove = -100;
+                        move.Flag = ChessFlag.Stalemate;
+                    }
+                    else
+                    {
+                        int opponentBest = int.MinValue;
+                        foreach(var opMove in opponentMoves)
+                        {
+                            if(opMove.ValueOfMove > opponentBest)
+                            {
+                                opponentBest = opMove.ValueOfMove;
+                            }
+                        }
+                        move.ValueOfMove = -opponentBest;
                     }
                 }
             }
@@ -1881,56 +1901,56 @@ namespace StudentAI
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.BlackKnight)
                                     {
                                         check = true;
                                         break;
@@ -2248,56 +2268,56 @@ namespace StudentAI
                                     //there are 8 moves a knight can make.
                                     tempx = x + 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y + 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 2;
                                     tempy = y - 1;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y + 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x + 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
                                     }
                                     tempx = x - 1;
                                     tempy = y - 2;
-                                    if (tempx > 0 && tempx < 8 && tempy > 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
+                                    if (tempx >= 0 && tempx < 8 && tempy >= 0 && tempy < 8 && before[tempx, tempy] == ChessPiece.WhiteKnight)
                                     {
                                         check = true;
                                         break;
