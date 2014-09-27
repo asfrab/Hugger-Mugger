@@ -336,7 +336,7 @@ namespace StudentAI
             {
                 if (X == 0)
                 {
-                    if (board[(X + 1) % 8 + (Y - 1) * 8] < '_') //take the enemy piece
+                    if (board[(X + 1) % 8 + (Y - 1) * 8] > EMPTY_SPACE) //take the enemy piece
                     {
                         newMove = new ChessMove(location, new ChessLocation(X + 1, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
