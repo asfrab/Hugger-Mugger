@@ -37,13 +37,12 @@ namespace StudentAI
         /// <param name="yourColor">Your color</param>
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor) {
-
-            List<ChessMove> possibleMoves = getPossibleMoves(board, myColor);
+            string fen = BoardToModifiedFen(board);
+            List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
             foreach (ChessMove move in possibleMoves)
             {
-                var movedBoard = board.Clone();
-                movedBoard.MakeMove(move);
-                List<ChessMove> opponentMoves = getPossibleMoves(board, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                var movedBoard = MakeMove(fen, move);
+                List<ChessMove> opponentMoves = getPossibleMoves(fen, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
                 if (move.Flag == ChessFlag.Check)
                 {     
                     if (opponentMoves.Count == 0)
@@ -122,7 +121,7 @@ namespace StudentAI
             }
 
             if (moveToMake.From != null)
-                ModifiedFen = MakeMove(moveToMake);
+                ModifiedFen = MakeMove(ModifiedFen, moveToMake);
 
             return moveToMake;
         }
@@ -136,14 +135,14 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            List<ChessMove> possibleMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving);
+            string fen = BoardToModifiedFen(boardBeforeMove);
+            List<ChessMove> possibleMoves = getPossibleMoves(fen, colorOfPlayerMoving);
             foreach (ChessMove move in possibleMoves)
             {
                 if (move.Flag == ChessFlag.Check)
                 {
-                    var movedBoard = boardBeforeMove.Clone();
-                    movedBoard.MakeMove(move);
-                    List<ChessMove> opponentMoves = getPossibleMoves(boardBeforeMove, colorOfPlayerMoving == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                    var movedBoard = MakeMove(fen, move);
+                    List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, colorOfPlayerMoving == ChessColor.Black ? ChessColor.White : ChessColor.Black);
                     if (opponentMoves.Count == 0)
                     {
                         move.Flag = ChessFlag.Checkmate;
@@ -171,19 +170,19 @@ namespace StudentAI
                 //        myPieces.Remove(moveToCheck.To);
                 //    }
                 //}
-                ModifiedFen = MakeMove(moveToCheck);
+                ModifiedFen = MakeMove(ModifiedFen, moveToCheck);
 
                 return true;
             }
             return false;
         }
 
-        private List<ChessMove> getPossibleMoves(ChessBoard board, ChessColor myColor)
+        private List<ChessMove> getPossibleMoves(string board, ChessColor myColor)
         {
             List<ChessMove> possibleMoves = new List<ChessMove>();
             if (myColor == ChessColor.White) {
                 for (int i = 0; i < 64; ++i) {
-                    if (ModifiedFen[i] != '_' && char.IsUpper(ModifiedFen[i])) {
+                    if (board[i] != '_' && char.IsUpper(ModifiedFen[i])) {
                         switch (ModifiedFen[i]) {
                             case 'P': // Pawn
                                 possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
@@ -209,7 +208,7 @@ namespace StudentAI
             }
             else {
                 for (int i = 0; i < 64; ++i) {
-                    if (ModifiedFen[i] != '_' && char.IsLower(ModifiedFen[i])) {
+                    if (board[i] != '_' && char.IsLower(ModifiedFen[i])) {
                         switch (ModifiedFen[i]) {
                             case 'p': // Pawn
                                 possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
@@ -239,8 +238,8 @@ namespace StudentAI
         #endregion
 
         #region Fen Methods
-        public string MakeMove(ChessMove move) {
-            StringBuilder newFen = new StringBuilder(ModifiedFen);
+        public string MakeMove(string fen, ChessMove move) {
+            StringBuilder newFen = new StringBuilder(fen);
             int fromIndex = move.From.X % 8  + move.From.Y * 8;
             int toIndex = move.To.X % 8 + move.To.Y * 8;
             newFen[toIndex] = ModifiedFen[fromIndex];
@@ -253,6 +252,58 @@ namespace StudentAI
             }
             //this.Log(newFen.ToString());
             return newFen.ToString();
+        }
+
+        public string BoardToModifiedFen(ChessBoard board) {
+            StringBuilder fen = new StringBuilder(64);
+            board.ToPartialFenBoard();
+            for (int y = 0; y < 8; ++y){
+                for (int x = 0; x < 8; ++x){
+                    switch(board[x, y]){
+                        case ChessPiece.WhitePawn:
+                            fen.Append('P');
+                            break;
+                        case ChessPiece.WhiteRook:
+                            fen.Append('R');
+                            break;
+                        case ChessPiece.WhiteKnight:
+                            fen.Append('N');
+                            break;
+                        case ChessPiece.WhiteBishop:
+                            fen.Append('B');
+                            break;
+                        case ChessPiece.WhiteQueen:
+                            fen.Append('Q');
+                            break;
+                        case ChessPiece.WhiteKing:
+                            fen.Append('K');
+                            break;
+                        case ChessPiece.BlackPawn:
+                            fen.Append('p');
+                            break;
+                        case ChessPiece.BlackRook:
+                            fen.Append('r');
+                            break;
+                        case ChessPiece.BlackKnight:
+                            fen.Append('n');
+                            break;
+                        case ChessPiece.BlackBishop:
+                            fen.Append('b');
+                            break;
+                        case ChessPiece.BlackQueen:
+                            fen.Append('q');
+                            break;
+                        case ChessPiece.BlackKing:
+                            fen.Append('k');
+                            break;
+                        case ChessPiece.Empty:
+                            fen.Append('_');
+                            continue;
+                    }
+
+                }
+            }
+            return fen.ToString();
         }
         #endregion
 
@@ -1500,7 +1551,7 @@ namespace StudentAI
         /// <returns> 0 if no check. -1 if check against color of move, 1 if check for player of move.</returns>
         public int isCheck(string before, ChessMove move, ChessColor color)
         {
-            return isCheckHelper(MakeMove(move), color, move);
+            return isCheckHelper(MakeMove(before, move), color, move);
         }
 
         public int isCheckHelper(string before, ChessColor color, ChessMove move)
