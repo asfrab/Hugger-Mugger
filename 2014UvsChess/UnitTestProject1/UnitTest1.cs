@@ -6,14 +6,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace StudentAI {
+namespace StudentAI
+{
     [TestClass]
-    public class UnitTest1 {
+    public class UnitTest1
+    {
         const string EMPTY_BOARD = "8/8/8/1K6/8/8/8/8 w KQkq - 0 1";
         const string FRESH_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
         [TestMethod]
-        public void GetPositionsTest() {
+        public void GetPositionsTest()
+        {
 
             StudentAI derp = new StudentAI();
             StudentAI derp2 = new StudentAI();
@@ -22,20 +25,25 @@ namespace StudentAI {
             ChessColor color = ChessColor.Black;
             int i = 0;
 
-            do {
+            do
+            {
                 move = derp.GetNextMove(board, color);
-                if (derp2.IsValidMove(board, move, color)) {
+                if (derp2.IsValidMove(board, move, color))
+                {
                     board.MakeMove(move);
                 }
-                else {
+                else
+                {
                     Assert.Fail("move made was detected as invalid");
                 }
                 color = (color == ChessColor.White) ? ChessColor.Black : ChessColor.White;
                 move = derp2.GetNextMove(board, color);
-                if (derp.IsValidMove(board, move, color)) {
+                if (derp.IsValidMove(board, move, color))
+                {
                     board.MakeMove(move);
                 }
-                else {
+                else
+                {
                     Assert.Fail("move made was detected as invalid");
                 }
                 color = (color == ChessColor.White) ? ChessColor.Black : ChessColor.White;
@@ -45,7 +53,8 @@ namespace StudentAI {
         #region MoveTesting
         #region Knight Moves
         [TestMethod]
-        public void TestKnightMoves() {
+        public void TestKnightMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -55,7 +64,8 @@ namespace StudentAI {
             ChessLocation locToTest;
 
             #region BlankBoard
-            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
+            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor)))
+            {
                 board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
@@ -100,12 +110,13 @@ namespace StudentAI {
             }
             #endregion
 
-        } 
+        }
         #endregion
-        
+
         #region Pawn Moves
         [TestMethod]
-        public void TestPawnMoves() {
+        public void TestPawnMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -116,11 +127,14 @@ namespace StudentAI {
 
             #region BlankBoard
             board = FenToModifiedFen("1K2k3/8/8/8/8/8/8/8 w KQkq - 0 1");
-            for (int y = 1; y < 7; ++y) {
-                for (int x = 0; x < 8; ++x) {
+            for (int y = 1; y < 7; ++y)
+            {
+                for (int x = 0; x < 8; ++x)
+                {
                     locToTest = new ChessLocation(x, y);
                     moves = derp.PawnMoves(board, locToTest, ChessColor.Black);
-                    if (y == 1) {
+                    if (y == 1)
+                    {
                         expected.Add(CreateMove(locToTest, x, y + 2));
                     }
                     expected.Add(CreateMove(locToTest, x, y + 1));
@@ -129,11 +143,14 @@ namespace StudentAI {
             }
 
             board = FenToModifiedFen("8/8/8/8/8/8/8/1K2k3 w KQkq - 0 1");
-            for (int y = 6; y < 0; --y) {
-                for (int x = 0; x < 8; ++x) {
+            for (int y = 6; y < 0; --y)
+            {
+                for (int x = 0; x < 8; ++x)
+                {
                     locToTest = new ChessLocation(x, y);
                     moves = derp.PawnMoves(board, locToTest, ChessColor.Black);
-                    if (y == 6) {
+                    if (y == 6)
+                    {
                         expected.Add(CreateMove(locToTest, x, y - 2));
                     }
                     expected.Add(CreateMove(locToTest, x, y - 1));
@@ -141,12 +158,13 @@ namespace StudentAI {
                 }
             }
             #endregion
-        } 
+        }
         #endregion
 
         #region King Moves
         [TestMethod]
-        public void TestKingMoves() {
+        public void TestKingMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -156,7 +174,8 @@ namespace StudentAI {
             ChessLocation locToTest;
 
             #region BlankBoard
-            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
+            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor)))
+            {
                 board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
@@ -204,12 +223,13 @@ namespace StudentAI {
                 #endregion
             }
             #endregion
-        } 
+        }
         #endregion
 
         #region Rook Moves
         [TestMethod]
-        public void TestRookMoves() {
+        public void TestRookMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -219,16 +239,19 @@ namespace StudentAI {
             ChessLocation locToTest;
 
             #region BlankBoard
-            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
+            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor)))
+            {
                 board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 locToTest = new ChessLocation(0, 0);
                 moves = derp.RookMoves(board, locToTest, color);
-                for (int x = locToTest.X + 1; x < 8; ++x) {
+                for (int x = locToTest.X + 1; x < 8; ++x)
+                {
                     expected.Add(CreateMove(locToTest, x, locToTest.Y));
                 }
-                for (int y = locToTest.Y + 1; y < 8; ++y) {
+                for (int y = locToTest.Y + 1; y < 8; ++y)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X, y));
                 }
                 CompareMoveLists(expected, moves);
@@ -236,10 +259,12 @@ namespace StudentAI {
 
                 locToTest = new ChessLocation(7, 0);
                 moves = derp.RookMoves(board, locToTest, color);
-                for (int x = locToTest.X - 1; x >= 0; --x) {
+                for (int x = locToTest.X - 1; x >= 0; --x)
+                {
                     expected.Add(CreateMove(locToTest, x, locToTest.Y));
                 }
-                for (int y = locToTest.Y + 1; y < 8; ++y) {
+                for (int y = locToTest.Y + 1; y < 8; ++y)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X, y));
                 }
                 CompareMoveLists(expected, moves);
@@ -247,10 +272,12 @@ namespace StudentAI {
 
                 locToTest = new ChessLocation(0, 7);
                 moves = derp.RookMoves(board, locToTest, color);
-                for (int x = locToTest.X + 1; x < 8; ++x) {
+                for (int x = locToTest.X + 1; x < 8; ++x)
+                {
                     expected.Add(CreateMove(locToTest, x, locToTest.Y));
                 }
-                for (int y = locToTest.Y - 1; y >= 0; --y) {
+                for (int y = locToTest.Y - 1; y >= 0; --y)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X, y));
                 }
                 CompareMoveLists(expected, moves);
@@ -258,10 +285,12 @@ namespace StudentAI {
 
                 locToTest = new ChessLocation(7, 7);
                 moves = derp.RookMoves(board, locToTest, color);
-                for (int x = locToTest.X - 1; x >= 0; --x) {
+                for (int x = locToTest.X - 1; x >= 0; --x)
+                {
                     expected.Add(CreateMove(locToTest, x, locToTest.Y));
                 }
-                for (int y = locToTest.Y - 1; y >= 0; --y) {
+                for (int y = locToTest.Y - 1; y >= 0; --y)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X, y));
                 }
                 CompareMoveLists(expected, moves);
@@ -270,11 +299,13 @@ namespace StudentAI {
                 #region Center
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.RookMoves(board, locToTest, color);
-                for (int x = 0; x < 8; ++x) {
+                for (int x = 0; x < 8; ++x)
+                {
                     if (x != locToTest.X)
                         expected.Add(CreateMove(locToTest, x, locToTest.Y));
                 }
-                for (int y = 0; y < 8; ++y) {
+                for (int y = 0; y < 8; ++y)
+                {
                     if (y != locToTest.Y)
                         expected.Add(CreateMove(locToTest, locToTest.X, y));
                 }
@@ -283,12 +314,13 @@ namespace StudentAI {
                 #endregion
             }
             #endregion
-        } 
+        }
         #endregion
 
         #region Queen Moves
         [TestMethod]
-        public void TestQueenMoves() {
+        public void TestQueenMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -298,14 +330,16 @@ namespace StudentAI {
             ChessLocation locToTest;
 
             #region BlankBoard
-            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
+            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor)))
+            {
                 board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 board = FenToModifiedFen(color == ChessColor.White ? "8/8/6pp/1K4pk/6pp/8/8/8 w KQkq - 0 1" : "8/8/6PP/1k4PK/6PP/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 0);
                 moves = derp.QueenMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y));
@@ -315,7 +349,8 @@ namespace StudentAI {
                 board = FenToModifiedFen(color == ChessColor.White ? "8/8/p7/k5K1/8/8/8/8 w KQkq - 0 1" : "8/8/P7/K5k1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 0);
                 moves = derp.QueenMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y));
@@ -325,7 +360,8 @@ namespace StudentAI {
                 board = FenToModifiedFen(color == ChessColor.White ? "8/8/1K5k/7p/8/8/8/8 w KQkq - 0 1" : "8/8/1k5K/7P/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 7);
                 moves = derp.QueenMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y));
@@ -335,7 +371,8 @@ namespace StudentAI {
                 board = FenToModifiedFen(color == ChessColor.White ? "8/8/k5K1/p7/8/8/8/8 w KQkq - 0 1" : "8/8/K5k1/P7/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 7);
                 moves = derp.QueenMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y));
@@ -347,7 +384,8 @@ namespace StudentAI {
                 board = FenToModifiedFen(color == ChessColor.White ? "1rkp2K1/2pp4/8/8/4Q3/8/8/8 w KQkq - 0 1" : "1RKP2k1/2PP4/8/8/4q3/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.QueenMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     if (locToTest.X - i == 1 && locToTest.Y - i == 1)
                         expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i, ChessFlag.Check));
                     else
@@ -367,12 +405,13 @@ namespace StudentAI {
                 #endregion
             }
             #endregion
-        } 
+        }
         #endregion
 
         #region Bishop Moves
         [TestMethod]
-        public void TestBishopMoves() {
+        public void TestBishopMoves()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> expected = new List<ChessMove>();
@@ -382,14 +421,16 @@ namespace StudentAI {
             ChessLocation locToTest;
 
             #region BlankBoard
-            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor))) {
+            foreach (ChessColor color in (ChessColor[])Enum.GetValues(typeof(ChessColor)))
+            {
                 board = FenToModifiedFen("8/3k4/8/1K6/8/8/8/8 w KQkq - 0 1");
 
                 #region Corners
                 board = FenToModifiedFen("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y + i));
                 }
                 CompareMoveLists(expected, moves);
@@ -397,7 +438,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/1k3K2/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y + i));
                 }
                 CompareMoveLists(expected, moves);
@@ -405,7 +447,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/1k3K2/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y - i));
                 }
                 CompareMoveLists(expected, moves);
@@ -413,7 +456,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/2k3K1/8/8/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 8; ++i) {
+                for (int i = 1; i < 8; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i));
                 }
                 CompareMoveLists(expected, moves);
@@ -423,7 +467,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(0, 3);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y - i));
                 }
@@ -433,7 +478,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 0);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y + i));
                 }
@@ -443,7 +489,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/8/8/1K3k2/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(7, 4);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y + i));
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i));
                 }
@@ -453,7 +500,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/8/8/2k3K1/8/8/8/8 w KQkq - 0 1");
                 locToTest = new ChessLocation(3, 7);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i));
                 }
@@ -465,7 +513,8 @@ namespace StudentAI {
                 board = FenToModifiedFen("8/4k3/8/8/8/8/8/4K3 w KQkq - 0 1");
                 locToTest = new ChessLocation(4, 4);
                 moves = derp.BishopMoves(board, locToTest, color);
-                for (int i = 1; i < 4; ++i) {
+                for (int i = 1; i < 4; ++i)
+                {
                     expected.Add(CreateMove(locToTest, locToTest.X - i, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y - i));
                     expected.Add(CreateMove(locToTest, locToTest.X + i, locToTest.Y + i));
@@ -476,25 +525,44 @@ namespace StudentAI {
                 #endregion
             }
             #endregion
-        } 
+        }
         #endregion
+        #region CheckMate
+        [TestMethod]
+        public void TestCheckMate()
+        {
+            StudentAI derp = new StudentAI();
 
-        public ChessMove CreateMove(ChessLocation from, int toX, int toY, ChessFlag flag = ChessFlag.NoFlag) {
+            List<ChessMove> expected = new List<ChessMove>();
+            List<ChessMove> moves = new List<ChessMove>();
+
+            ChessBoard board = new ChessBoard("2k5/8/2PB4/1p1n2Rp/7P/4P3/3P1P2/5K2 w KQkq - 1 41");
+            ChessLocation locToTest;
+            derp.GetNextMove(board, ChessColor.White);
+
+        }
+        #endregion
+        public ChessMove CreateMove(ChessLocation from, int toX, int toY, ChessFlag flag = ChessFlag.NoFlag)
+        {
             return CreateMove(from.X, from.Y, toX, toY, flag);
         }
 
-        public ChessMove CreateMove(int fromX, int fromY, int toX, int toY, ChessFlag flag = ChessFlag.NoFlag) {
+        public ChessMove CreateMove(int fromX, int fromY, int toX, int toY, ChessFlag flag = ChessFlag.NoFlag)
+        {
             return new ChessMove(new ChessLocation(fromX, fromY), new ChessLocation(toX, toY), flag);
         }
 
-        public bool CompareMoveLists(List<ChessMove> expectedMoves, List<ChessMove> actual) {
+        public bool CompareMoveLists(List<ChessMove> expectedMoves, List<ChessMove> actual)
+        {
             List<ChessMove> expected = new List<ChessMove>(expectedMoves);
             expectedMoves.Clear();
-            if (expected.Count != actual.Count) {
+            if (expected.Count != actual.Count)
+            {
                 throw new Exception(string.Format("Expected # of moves: {0}; Actual # of Moves: {1}", expected.Count, actual.Count));
             }
 
-            foreach (ChessMove expectedMove in expected) {
+            foreach (ChessMove expectedMove in expected)
+            {
                 if (!actual.Contains(expectedMove))
                     throw new Exception(string.Format("Could not find move: [{0},{1}] to [{2},{3}]", expectedMove.From.X, expectedMove.From.Y, expectedMove.To.X, expectedMove.To.Y));
             }
@@ -502,10 +570,13 @@ namespace StudentAI {
             return true;
         }
 
-        public string FenToModifiedFen(string fenString) {
+        public string FenToModifiedFen(string fenString)
+        {
             StringBuilder modifiedFen = new StringBuilder(fenString.Substring(0, fenString.IndexOf(' ')).Replace("/", ""));
-            for (int i = 0; i < 64; ++i) {
-                if (char.IsDigit(modifiedFen[i])) {
+            for (int i = 0; i < 64; ++i)
+            {
+                if (char.IsDigit(modifiedFen[i]))
+                {
                     int num = int.Parse(modifiedFen[i].ToString());
                     string st = new String('_', num);
                     modifiedFen.Insert(i + 1, new String('_', num));
@@ -519,7 +590,8 @@ namespace StudentAI {
 
 
         [TestMethod]
-        public void TestMethod1() {
+        public void TestMethod1()
+        {
             StudentAI derp = new StudentAI();
 
             List<ChessMove> moves = new List<ChessMove>();

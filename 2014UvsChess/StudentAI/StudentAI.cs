@@ -36,57 +36,59 @@ namespace StudentAI
         /// <param name="board">Current chess board</param>
         /// <param name="yourColor">Your color</param>
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
-        public ChessMove GetNextMove(ChessBoard board, ChessColor myColor) {
+        public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
+        {
             string fen = BoardToModifiedFen(board);
             List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
             foreach (ChessMove move in possibleMoves)
             {
                 var movedBoard = MakeMove(fen, move);
-                List<ChessMove> opponentMoves = getPossibleMoves(fen, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-                if (move.Flag == ChessFlag.Check)
-                {     
-                    if (opponentMoves.Count == 0)
-                    {
-                        move.Flag = ChessFlag.Checkmate;
-                        move.ValueOfMove = int.MaxValue;
-                    }
-                }
-                else
+                List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+
+
+                if (opponentMoves.Count == 0)
                 {
-                    if(opponentMoves.Count == 0)
+                    if (move.Flag == ChessFlag.Check)
+                    {
+                        move.ValueOfMove = 100000;
+                        move.Flag = ChessFlag.Checkmate;
+                    }
+                    else
                     {
                         move.ValueOfMove = -100;
                         move.Flag = ChessFlag.Stalemate;
                     }
-                    else
+                }
+                else
+                {
+                    int opponentBest = int.MinValue;
+                    foreach (var opMove in opponentMoves)
                     {
-                        int opponentBest = int.MinValue;
-                        foreach(var opMove in opponentMoves)
+                        if (opMove.ValueOfMove > opponentBest)
                         {
-                            if(opMove.ValueOfMove > opponentBest)
-                            {
-                                opponentBest = opMove.ValueOfMove;
-                            }
+                            opponentBest = opMove.ValueOfMove;
                         }
-                        move.ValueOfMove = -opponentBest;
                     }
+                    move.ValueOfMove = -opponentBest;
+
                 }
             }
             ChessMove moveToMake;
             ChessPiece pieceToMove;
 
             // If there are moves to be made choose one at random
-            if (possibleMoves.Count > 0) {
+            if (possibleMoves.Count > 0)
+            {
                 possibleMoves.Sort((a, b) => b.ValueOfMove.CompareTo(a.ValueOfMove));
                 int highestVal = int.MinValue;
                 int pos = 0;
-                foreach(var move in possibleMoves)
+                foreach (var move in possibleMoves)
                 {
-                    if(move.ValueOfMove > highestVal)
+                    if (move.ValueOfMove > highestVal)
                     {
                         highestVal = move.ValueOfMove;
                     }
-                    else if(move.ValueOfMove < highestVal)
+                    else if (move.ValueOfMove < highestVal)
                     {
                         break;
                     }
@@ -94,9 +96,9 @@ namespace StudentAI
                 }
                 if (pos > 0)
                 {
-                Random rand = new Random();
+                    Random rand = new Random();
                     int indexOfMove = rand.Next(pos);
-                moveToMake = possibleMoves[indexOfMove];
+                    moveToMake = possibleMoves[indexOfMove];
                 }
                 else
                 {
@@ -104,7 +106,7 @@ namespace StudentAI
                 }
                 // Change position of our piec in local collection
                 //pieceToMove = myPieces[moveToMake.From];
-                
+
                 //if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
                 //    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
                 //}
@@ -116,7 +118,8 @@ namespace StudentAI
                 //    theirPieces.Remove(moveToMake.To);
                 //}
             }
-            else { // No moves left.  Declare stalemate
+            else
+            { // No moves left.  Declare stalemate
                 moveToMake = new ChessMove(null, null, ChessFlag.Stalemate);
             }
 
@@ -180,53 +183,61 @@ namespace StudentAI
         private List<ChessMove> getPossibleMoves(string board, ChessColor myColor)
         {
             List<ChessMove> possibleMoves = new List<ChessMove>();
-            if (myColor == ChessColor.White) {
-                for (int i = 0; i < 64; ++i) {
-                    if (board[i] != '_' && char.IsUpper(ModifiedFen[i])) {
-                        switch (ModifiedFen[i]) {
+            if (myColor == ChessColor.White)
+            {
+                for (int i = 0; i < 64; ++i)
+                {
+                    if (board[i] != '_' && char.IsUpper(board[i]))
+                    {
+                        switch (board[i])
+                        {
                             case 'P': // Pawn
-                                possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(PawnMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'R': // Rook
-                                possibleMoves.AddRange(RookMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(RookMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'N': // Knight
-                                possibleMoves.AddRange(KnightMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(KnightMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'B': // Bishop
-                                possibleMoves.AddRange(BishopMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(BishopMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'Q': // Queen
-                                possibleMoves.AddRange(QueenMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(QueenMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'K': // King
-                                possibleMoves.AddRange(KingMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(KingMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                         }
                     }
                 }
             }
-            else {
-                for (int i = 0; i < 64; ++i) {
-                    if (board[i] != '_' && char.IsLower(ModifiedFen[i])) {
-                        switch (ModifiedFen[i]) {
+            else
+            {
+                for (int i = 0; i < 64; ++i)
+                {
+                    if (board[i] != '_' && char.IsLower(board[i]))
+                    {
+                        switch (board[i])
+                        {
                             case 'p': // Pawn
-                                possibleMoves.AddRange(PawnMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(PawnMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'r': // Rook
-                                possibleMoves.AddRange(RookMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(RookMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'n': // Knight
-                                possibleMoves.AddRange(KnightMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(KnightMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'b': // Bishop
-                                possibleMoves.AddRange(BishopMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(BishopMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'q': // Queen
-                                possibleMoves.AddRange(QueenMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(QueenMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                             case 'k': // King
-                                possibleMoves.AddRange(KingMoves(ModifiedFen, new ChessLocation(i % 8, i / 8), myColor));
+                                possibleMoves.AddRange(KingMoves(board, new ChessLocation(i % 8, i / 8), myColor));
                                 break;
                         }
                     }
@@ -238,28 +249,35 @@ namespace StudentAI
         #endregion
 
         #region Fen Methods
-        public string MakeMove(string fen, ChessMove move) {
+        public string MakeMove(string fen, ChessMove move)
+        {
             StringBuilder newFen = new StringBuilder(fen);
-            int fromIndex = move.From.X % 8  + move.From.Y * 8;
+            int fromIndex = move.From.X % 8 + move.From.Y * 8;
             int toIndex = move.To.X % 8 + move.To.Y * 8;
-            newFen[toIndex] = ModifiedFen[fromIndex];
+            newFen[toIndex] = newFen[fromIndex];
             newFen[fromIndex] = '_';
-            if (toIndex < 8 && newFen[toIndex] == 'P') {
+            if (toIndex < 8 && newFen[toIndex] == 'P')
+            {
                 newFen[toIndex] = 'Q';
             }
-            else if (toIndex >= 56 && newFen[toIndex] == 'p') {
+            else if (toIndex >= 56 && newFen[toIndex] == 'p')
+            {
                 newFen[toIndex] = 'q';
             }
             //this.Log(newFen.ToString());
             return newFen.ToString();
         }
 
-        public string BoardToModifiedFen(ChessBoard board) {
+        public string BoardToModifiedFen(ChessBoard board)
+        {
             StringBuilder fen = new StringBuilder(64);
             board.ToPartialFenBoard();
-            for (int y = 0; y < 8; ++y){
-                for (int x = 0; x < 8; ++x){
-                    switch(board[x, y]){
+            for (int y = 0; y < 8; ++y)
+            {
+                for (int x = 0; x < 8; ++x)
+                {
+                    switch (board[x, y])
+                    {
                         case ChessPiece.WhitePawn:
                             fen.Append('P');
                             break;
@@ -320,18 +338,18 @@ namespace StudentAI
                 {
                     if (board[(X + 1) % 8 + (Y - 1) * 8] < '_') //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[X % 8 + (Y- 1) * 8] == EMPTY_SPACE)
+                    if (board[X % 8 + (Y - 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[X % 8 + (Y- 2) * 8] == EMPTY_SPACE)
+                            if (board[X % 8 + (Y - 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -339,20 +357,20 @@ namespace StudentAI
                 }
                 else if (X == 7)
                 {
-                    if (board[(X - 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE) //take the enemy piece
+                    if (board[(X - 1) % 8 + (Y - 1) * 8] > EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[(X) % 8 + (Y- 1) * 8] == EMPTY_SPACE)
+                    if (board[(X) % 8 + (Y - 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[(X) % 8 + (Y- 2) * 8] == EMPTY_SPACE)
+                            if (board[(X) % 8 + (Y - 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -360,27 +378,27 @@ namespace StudentAI
                 }
                 else
                 {
-                    if (board[(X - 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE)// take the enemy piece
+                    if (board[(X - 1) % 8 + (Y - 1) * 8] > EMPTY_SPACE)// take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[(X) % 8 + (Y- 1) * 8] == EMPTY_SPACE)
+                    if (board[(X) % 8 + (Y - 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                         if (Y == 6) // pawn is in starting position
                         {
-                            if (board[(X) % 8 + (Y- 2) * 8] == EMPTY_SPACE)
+                            if (board[(X) % 8 + (Y - 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y- 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y - 2));
                                 if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                             }
                         }
                     }
-                    if (board[(X + 1) % 8 + (Y- 1) * 8] > EMPTY_SPACE) // take the enemy piece
+                    if (board[(X + 1) % 8 + (Y - 1) * 8] > EMPTY_SPACE) // take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y- 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y - 1));
                         if (isCheck(board, newMove, ChessColor.White) >= 0) { moves.Add(newMove); }
                     }
                 }
@@ -389,20 +407,20 @@ namespace StudentAI
             {
                 if (X == 0)
                 {
-                    if (board[(X + 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) //take the enemy piece
+                    if (board[(X + 1) % 8 + (Y + 1) * 8] < EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
+                    if (board[(X) % 8 + (Y + 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
+                            if (board[(X) % 8 + (Y + 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -410,20 +428,20 @@ namespace StudentAI
                 }
                 else if (X == 7)
                 {
-                    if (board[(X - 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) //take the enemy piece
+                    if (board[(X - 1) % 8 + (Y + 1) * 8] < EMPTY_SPACE) //take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
+                    if (board[(X) % 8 + (Y + 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
+                            if (board[(X) % 8 + (Y + 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
@@ -431,27 +449,27 @@ namespace StudentAI
                 }
                 else
                 {
-                    if (board[(X - 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE)// take the enemy piece
+                    if (board[(X - 1) % 8 + (Y + 1) * 8] < EMPTY_SPACE)// take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X - 1, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
-                    if (board[(X) % 8 + (Y+ 1) * 8] == EMPTY_SPACE)
+                    if (board[(X) % 8 + (Y + 1) * 8] == EMPTY_SPACE)
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                         if (Y == 1) // pawn is in starting position
                         {
-                            if (board[(X) % 8 + (Y+ 2) * 8] == EMPTY_SPACE)
+                            if (board[(X) % 8 + (Y + 2) * 8] == EMPTY_SPACE)
                             {
-                                newMove = new ChessMove(location, new ChessLocation(X, Y+ 2));
+                                newMove = new ChessMove(location, new ChessLocation(X, Y + 2));
                                 if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                             }
                         }
                     }
-                    if (board[(X + 1) % 8 + (Y+ 1) * 8] < EMPTY_SPACE) // take the enemy piece
+                    if (board[(X + 1) % 8 + (Y + 1) * 8] < EMPTY_SPACE) // take the enemy piece
                     {
-                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y+ 1));
+                        newMove = new ChessMove(location, new ChessLocation(X + 1, Y + 1));
                         if (isCheck(board, newMove, ChessColor.Black) >= 0) { moves.Add(newMove); }
                     }
                 }
@@ -531,7 +549,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -539,7 +557,7 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
@@ -551,7 +569,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -559,7 +577,7 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
@@ -571,7 +589,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -579,7 +597,7 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
@@ -591,7 +609,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -599,13 +617,15 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
+                    }
                 }
-            }
             }
             else // This is white
             {
                 for (int x = orig_X + 1; x < 8; ++x)
                 {
+                    int pos = x % 8 + orig_Y * 8;
+                    char boardspace = board[pos];
                     if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
                         if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
@@ -614,7 +634,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -622,10 +642,12 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int x = orig_X - 1; x >= 0; --x)
                 {
+                    int pos = x % 8 + orig_Y * 8;
+                    char boardspace = board[pos];
                     if (board[x % 8 + orig_Y * 8] != EMPTY_SPACE)
                     {
                         if (board[x % 8 + orig_Y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
@@ -634,7 +656,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -642,10 +664,12 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int y = orig_Y + 1; y < 8; ++y)
                 {
+                    int pos = orig_X % 8 + y * 8;
+                    char boardspace = board[pos];
                     if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
                         if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
@@ -654,7 +678,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -662,10 +686,12 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
-                }
+                    }
                 }
                 for (int y = orig_Y - 1; y >= 0; --y)
                 {
+                    int pos = orig_X % 8 + y * 8;
+                    char boardspace = board[pos];
                     if (board[orig_X % 8 + y * 8] != EMPTY_SPACE)
                     {
                         if (board[orig_X % 8 + y * 8] > EMPTY_SPACE) // < empty = black | > empty = white
@@ -674,7 +700,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -682,8 +708,8 @@ namespace StudentAI
                     if (isCheck(board, move, color) >= 0)
                     {
                         movelist.Add(move);
+                    }
                 }
-            }
             }
             return movelist;
         }
@@ -719,7 +745,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -746,7 +772,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -772,7 +798,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -799,7 +825,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -827,7 +853,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -854,7 +880,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -880,7 +906,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -907,7 +933,7 @@ namespace StudentAI
                             if (isCheck(board, move, color) >= 0)
                             {
                                 movelist.Add(move);
-                        }
+                            }
                         }
                         break;
                     }
@@ -1446,7 +1472,8 @@ namespace StudentAI
         #region Knight Moves
         /// <summary>Returns all valid moves for a knight from a particular position on the board.
         ///  The possible moves are broken up into columns.  2 to left; 1 to left; 1 to right; 2 to right</summary>
-        public List<ChessMove> KnightMoves(string board, ChessLocation position, ChessColor color) {
+        public List<ChessMove> KnightMoves(string board, ChessLocation position, ChessColor color)
+        {
             List<ChessMove> moves = new List<ChessMove>();
             int positionX = position.X;
             int positionY = position.Y;
@@ -1457,88 +1484,116 @@ namespace StudentAI
             else
                 isMyPiece = char.IsLower;
 
-            if (positionX > 0) { // Can I move to the left?
-                if (positionX > 1) { // Can I move 2 to the left?
-                    if (positionY > 0) { // Can I move up 1?
-                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY - 1) * 8])) { // Checks if it is the opponents piece
+            if (positionX > 0)
+            { // Can I move to the left?
+                if (positionX > 1)
+                { // Can I move 2 to the left?
+                    if (positionY > 0)
+                    { // Can I move up 1?
+                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY - 1) * 8]))
+                        { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY - 1));
-                            if (isCheck(board, move, color) >= 0) {
-                            moves.Add(move);
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                moves.Add(move);
                             }
                         }
                     }
 
-                    if (positionY < 7) { // Can I move down 1?
-                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY + 1) * 8])) { // Checks if it is the opponents piece
+                    if (positionY < 7)
+                    { // Can I move down 1?
+                        if (!isMyPiece(board[(positionX - 2) % 8 + (positionY + 1) * 8]))
+                        { // Checks if it is the opponents piece
                             ChessMove move = new ChessMove(position, new ChessLocation(positionX - 2, positionY + 1));
-                            if (isCheck(board, move, color) >= 0) {
-                            moves.Add(move);
-                            }
-                        }
-                    }
-                }
-
-                if (positionY > 1) { // Can I move up 2?
-                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY - 2) * 8])) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY - 2));
-                        if (isCheck(board, move, color) >= 0) {
-                        moves.Add(move);
-                        }
-                    }
-                }
-
-                if (positionY < 6) { // Can I move down 2?
-                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY + 2) * 8])) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY + 2));
-                        if (isCheck(board, move, color) >= 0) {
-                        moves.Add(move);
-                        }
-                    }
-                }
-            }
-
-            if (positionX < 7) { // Can I move to the right?
-                if (positionX < 6) { // Can I move 2 to the right?
-                    if (positionY > 0) { // Can I move up 1?
-                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY - 1) * 8])) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY - 1));
-                            if (isCheck(board, move, color) >= 0) {
-                            moves.Add(move);
-                            }
-                        }
-                    }
-
-                    if (positionY < 7) { // Can I move down 1?
-                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY + 1) * 8])) { // Checks if it is the opponents piece
-                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY + 1));
-                            if (isCheck(board, move, color) >= 0) {
+                            if (isCheck(board, move, color) >= 0)
+                            {
                                 moves.Add(move);
                             }
                         }
                     }
                 }
 
-                if (positionY > 1) { // Can I move up 2?
-                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY - 2) * 8])) { // Checks if it is the opponents piece
-                        ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY - 2));
-                        if (isCheck(board, move, color) >= 0) {
-                        moves.Add(move);
+                if (positionY > 1)
+                { // Can I move up 2?
+                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY - 2) * 8]))
+                    { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY - 2));
+                        if (isCheck(board, move, color) >= 0)
+                        {
+                            moves.Add(move);
                         }
                     }
                 }
 
-                if (positionY < 6) { // Can I move down 2?
-                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY + 2) * 8])) { // Checks if it is the opponents piece
+                if (positionY < 6)
+                { // Can I move down 2?
+                    if (!isMyPiece(board[(positionX - 1) % 8 + (positionY + 2) * 8]))
+                    { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX - 1, positionY + 2));
+                        if (isCheck(board, move, color) >= 0)
+                        {
+                            moves.Add(move);
+                        }
+                    }
+                }
+            }
+
+            if (positionX < 7)
+            { // Can I move to the right?
+                if (positionX < 6)
+                { // Can I move 2 to the right?
+                    if (positionY > 0)
+                    { // Can I move up 1?
+                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY - 1) * 8]))
+                        { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY - 1));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                moves.Add(move);
+                            }
+                        }
+                    }
+
+                    if (positionY < 7)
+                    { // Can I move down 1?
+                        if (!isMyPiece(board[(positionX + 2) % 8 + (positionY + 1) * 8]))
+                        { // Checks if it is the opponents piece
+                            ChessMove move = new ChessMove(position, new ChessLocation(positionX + 2, positionY + 1));
+                            if (isCheck(board, move, color) >= 0)
+                            {
+                                moves.Add(move);
+                            }
+                        }
+                    }
+                }
+
+                if (positionY > 1)
+                { // Can I move up 2?
+                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY - 2) * 8]))
+                    { // Checks if it is the opponents piece
+                        ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY - 2));
+                        if (isCheck(board, move, color) >= 0)
+                        {
+                            moves.Add(move);
+                        }
+                    }
+                }
+
+                if (positionY < 6)
+                { // Can I move down 2?
+                    if (!isMyPiece(board[(positionX + 1) % 8 + (positionY + 2) * 8]))
+                    { // Checks if it is the opponents piece
                         ChessMove move = new ChessMove(position, new ChessLocation(positionX + 1, positionY + 2));
-                        if (isCheck(board, move, color) >= 0) {
-                        moves.Add(move);
+                        if (isCheck(board, move, color) >= 0)
+                        {
+                            moves.Add(move);
                         }
                     }
                 }
             }
 
             return moves;
-        } 
+        }
         #endregion
 
         #region Flag functions
