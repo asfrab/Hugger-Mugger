@@ -15,9 +15,9 @@ namespace StudentAI
         public string Name
         {
 #if DEBUG
-            get { return "Its a Trap! (Debug)"; }
+            get { return "Hugger-Mugger (Debug)"; }
 #else
-            get { return "Its a Trap!"; }
+            get { return "Hugger-Mugger"; }
 #endif
         }
 
