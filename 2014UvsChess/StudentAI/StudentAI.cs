@@ -17,7 +17,7 @@ namespace StudentAI
 #if DEBUG
             get { return "Hugger-Mugger (Debug)"; }
 #else
-            get { return "Hugger-Mugger"; }
+            get { return "Hugger-Mugger SMART"; }
 #endif
         }
 
@@ -1609,6 +1609,21 @@ namespace StudentAI
             return isCheckHelper(MakeMove(before, move), color, move);
         }
 
+        static class PieceVals
+        {
+            public static int KINGVAL = 4500;
+            public static int QUEEN = 900;
+            public static int ROOK = 500;
+            public static int KNIGHT = 315;
+            public static int BISHOP = 315;
+            public static int PAWN = 100;
+            public static int EDGEPAWN = 90;
+            public static int BISHOPPAIR = 70;
+            public static int KNIGHTROOKCHANGE = 5;
+            public static int PAWNSTOCHANGE = 7;
+            public static int CHECKVAL = 300;
+        }
+
         public int isCheckHelper(string before, ChessColor color, ChessMove move)
         {
 
@@ -1617,6 +1632,13 @@ namespace StudentAI
             int checkValue = 0;
             bool checkedBlack = false;
             bool checkedWhite = false;
+            int pawnCount = 0;
+            int whiteBishopCount = 0;
+            int blackBishopCount = 0;
+            int whiteKnightCount = 0;
+            int blackKnightCount = 0;
+            int whiteRookCount = 0;
+            int blackRookCount = 0;
             int whiteTotal = 0;
             int blackTotal = 0;
             while (x < 8)//&&  (!checkedBlack || !checkedWhite))
@@ -1628,7 +1650,7 @@ namespace StudentAI
                     switch (piece)
                     {
                         case 'K':
-                            whiteTotal += 100;
+                            whiteTotal += PieceVals.KINGVAL;
                             checkedWhite = true;
                             do
                             {
@@ -1995,7 +2017,7 @@ namespace StudentAI
                             }
                             break;
                         case 'k':
-                            blackTotal += 100;
+                            blackTotal += PieceVals.KINGVAL;
                             checkedBlack = true;
                             do
                             {
@@ -2362,34 +2384,42 @@ namespace StudentAI
                             }
                             break;
                         case 'b':
-                            blackTotal += 4;
+                            blackTotal += PieceVals.BISHOP;
+                            blackBishopCount++;
                             break;
                         case 'n':
-                            blackTotal += 3;
+                            blackTotal += PieceVals.KNIGHT;
+                            blackKnightCount++;
                             break;
                         case 'p':
-                            blackTotal += 1;
+                            blackTotal += PieceVals.PAWN;
+                            pawnCount++;
                             break;
                         case 'q':
-                            blackTotal += 9;
+                            blackTotal += PieceVals.QUEEN;
                             break;
                         case 'r':
-                            blackTotal += 5;
+                            blackTotal += PieceVals.ROOK;
+                            blackRookCount++;
                             break;
                         case 'B':
-                            whiteTotal += 4;
+                            whiteTotal += PieceVals.BISHOP;
+                            whiteBishopCount++;
                             break;
                         case 'N':
-                            whiteTotal += 3;
+                            whiteTotal += PieceVals.KNIGHT;
+                            whiteKnightCount++;
                             break;
                         case 'P':
-                            whiteTotal += 1;
+                            whiteTotal += PieceVals.PAWN;
+                            pawnCount++;
                             break;
                         case 'Q':
-                            whiteTotal += 9;
+                            whiteTotal += PieceVals.QUEEN;
                             break;
                         case 'R':
-                            whiteTotal += 5;
+                            whiteTotal += PieceVals.ROOK;
+                            whiteRookCount++;
                             break;
                         default:
                             break;
@@ -2423,13 +2453,35 @@ namespace StudentAI
                     checkValue = 1;
                 }
             }
+            //change totals here due to bishop pair and pawn count.
+            if(whiteBishopCount > 1)
+            {
+                whiteTotal += PieceVals.BISHOPPAIR;
+            }
+            if(blackBishopCount > 1)
+            {
+                blackTotal += PieceVals.BISHOPPAIR;
+            }
+            if(pawnCount > PieceVals.PAWNSTOCHANGE)
+            {
+                whiteTotal -= whiteRookCount * PieceVals.KNIGHTROOKCHANGE * (pawnCount - PieceVals.PAWNSTOCHANGE);
+                whiteTotal += whiteKnightCount * PieceVals.KNIGHTROOKCHANGE * (pawnCount - PieceVals.PAWNSTOCHANGE);
+                blackTotal -= blackRookCount * PieceVals.KNIGHTROOKCHANGE * (pawnCount - PieceVals.PAWNSTOCHANGE);
+                blackTotal += blackKnightCount * PieceVals.KNIGHTROOKCHANGE * (pawnCount - PieceVals.PAWNSTOCHANGE);
+            }
+            else
+            {
+                whiteTotal += whiteRookCount * PieceVals.KNIGHTROOKCHANGE * (PieceVals.PAWNSTOCHANGE - pawnCount );
+                whiteTotal -= whiteKnightCount * PieceVals.KNIGHTROOKCHANGE * (PieceVals.PAWNSTOCHANGE - pawnCount);
+                blackTotal += blackRookCount * PieceVals.KNIGHTROOKCHANGE * (PieceVals.PAWNSTOCHANGE - pawnCount);
+                blackTotal -= blackKnightCount * PieceVals.KNIGHTROOKCHANGE * (PieceVals.PAWNSTOCHANGE - pawnCount);
+            }
             move.ValueOfMove = color == ChessColor.Black ? blackTotal - whiteTotal : whiteTotal - blackTotal;
             if (checkValue > 0)
             {
                 move.Flag = ChessFlag.Check;
-                move.ValueOfMove += 30;  //30 points due to the king being in check.
+                move.ValueOfMove += PieceVals.CHECKVAL;
             }
-
             return checkValue;
         }
         #endregion
@@ -2438,7 +2490,17 @@ namespace StudentAI
 
 
 
+        #region MIN MAX SUPPORT
+        struct MoveStats
+        {
+            ChessMove rootMove;
+            string boardAfterMove;
+            long anticipatedValue;
+            ChessColor colorOfNextMove;
+        }
 
+
+        #endregion
 
 
 
