@@ -527,6 +527,7 @@ namespace StudentAI
             #endregion
         }
         #endregion
+
         #region CheckMate
         [TestMethod]
         public void TestCheckMate()
@@ -588,6 +589,17 @@ namespace StudentAI
         }
         #endregion
 
+        [TestMethod]
+        public void TestingMoveValues()
+        {
+            StudentAI derp = new StudentAI();
+
+            List<ChessMove> expected = new List<ChessMove>();
+            List<ChessMove> moves = new List<ChessMove>();
+
+            ChessBoard board = new ChessBoard("r1b2knr/ppq5/2ppp1B1/5p2/PP1P1b1P/R7/5PP1/1N1Q1KNR b KQkq - 1 18");
+            derp.GetNextMove(board, ChessColor.Black);
+        }
 
         [TestMethod]
         public void TestMethod1()

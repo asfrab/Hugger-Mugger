@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UvsChess;
+using System.Linq;
 
 namespace StudentAI
 {
@@ -17,12 +18,12 @@ namespace StudentAI
 #if DEBUG
             get { return "Hugger-Mugger (Debug)"; }
 #else
-            get { return "Hugger-Mugger SMART"; }
+            get { return "Hugger-Mugger Queued"; }
 #endif
         }
 
         #region Main Methods
-        string ModifiedFen = "rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR";
+        //string ModifiedFen = "rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR";
         const char EMPTY_SPACE = '_';
 
         Dictionary<ChessLocation, ChessPiece> myPieces;
@@ -38,10 +39,15 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+            DateTime start = DateTime.Now;
+            Queue<MoveStats> MovesToEvaluate = new Queue<MoveStats>();
             string fen = BoardToModifiedFen(board);
             List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
+            Dictionary<ChessMove, MoveValue> moveValues = new Dictionary<ChessMove, MoveValue>();
             foreach (ChessMove move in possibleMoves)
             {
+                MoveValue val = new MoveValue(myColor);
+                val.maxValue = move.ValueOfMove;
                 var movedBoard = MakeMove(fen, move);
                 List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
 
@@ -68,17 +74,77 @@ namespace StudentAI
                         {
                             opponentBest = opMove.ValueOfMove;
                         }
+                        MovesToEvaluate.Enqueue(new MoveStats(move, MakeMove(movedBoard, opMove), myColor, 2, opMove.Flag));
                     }
                     move.ValueOfMove = -opponentBest;
+                }
+                val.minValue = move.ValueOfMove;
+                moveValues[move] = val;
+            }
 
+            int movesEvaluated = 0;
+            try
+            {
+                while ((DateTime.Now - start).TotalSeconds < 5 && MovesToEvaluate.Count > 0)
+                {
+                    MoveStats evaluate = MovesToEvaluate.Dequeue();
+                    movesEvaluated++;
+                    List<ChessMove> opponentMoves = getPossibleMoves(evaluate.boardAfterMove, evaluate.colorOfNextMove);
+                    if (!OutsideOfThreshhold(evaluate.depth, opponentMoves, moveValues[evaluate.rootMove].maxValue, moveValues[evaluate.rootMove].minValue))
+                    {
+                        int opponentBest = int.MinValue;
+                        int myBest = opponentMoves.Count > 0 ? int.MinValue : evaluate.flagOfMove == ChessFlag.Check ? 10000 : 0;
+                        if (evaluate.colorOfNextMove == myColor)
+                        {
+
+                            foreach (var myMove in opponentMoves)
+                            {
+                                if (myMove.ValueOfMove > myBest)
+                                {
+                                    myBest = myMove.ValueOfMove;
+                                }
+                                MovesToEvaluate.Enqueue(new MoveStats(evaluate.rootMove, MakeMove(evaluate.boardAfterMove, myMove), evaluate.colorOfNextMove == ChessColor.Black ? ChessColor.White : ChessColor.Black, evaluate.depth + 1, myMove.Flag));
+                            }
+                            moveValues[evaluate.rootMove].maxValue = Math.Max(moveValues[evaluate.rootMove].maxValue, myBest);
+                        }
+                        else
+                        {
+
+                            foreach (var opMove in opponentMoves)
+                            {
+                                if (opMove.ValueOfMove > opponentBest)
+                                {
+                                    opponentBest = opMove.ValueOfMove;
+                                }
+                                MovesToEvaluate.Enqueue(new MoveStats(evaluate.rootMove, MakeMove(evaluate.boardAfterMove, opMove), evaluate.colorOfNextMove == ChessColor.Black ? ChessColor.White : ChessColor.Black, evaluate.depth + 1, opMove.Flag));
+                            }
+                            moveValues[evaluate.rootMove].minValue = Math.Min(moveValues[evaluate.rootMove].minValue, -opponentBest);
+                        }
+                        moveValues[evaluate.rootMove].depth = evaluate.depth;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Log(ex.Message);
+            }
+            Log("Moves Evaluated: " + movesEvaluated.ToString());
+            Log("Moves remaining: " + MovesToEvaluate.Count.ToString());
             ChessMove moveToMake;
-            ChessPiece pieceToMove;
 
             // If there are moves to be made choose one at random
-            if (possibleMoves.Count > 0)
+            if (moveValues.Keys.Count > 0)
             {
+                int maxDepth = 0;
+                possibleMoves = new List<ChessMove>();
+                foreach(var kvPair in moveValues)
+                {
+                    maxDepth = maxDepth > kvPair.Value.depth ? maxDepth : kvPair.Value.depth;
+                    kvPair.Key.ValueOfMove = kvPair.Value.maxValue + kvPair.Value.minValue;
+                    Log("Value of move : " + kvPair.Key.ValueOfMove);
+                    possibleMoves.Add(kvPair.Key);
+                }
+                Log("Max Depth Reached: " + maxDepth.ToString());
                 possibleMoves.Sort((a, b) => b.ValueOfMove.CompareTo(a.ValueOfMove));
                 int highestVal = int.MinValue;
                 int pos = 0;
@@ -123,9 +189,9 @@ namespace StudentAI
                 moveToMake = new ChessMove(null, null, ChessFlag.Stalemate);
             }
 
-            if (moveToMake.From != null)
-                ModifiedFen = MakeMove(ModifiedFen, moveToMake);
-
+            //if (moveToMake.From != null)
+            //    ModifiedFen = MakeMove(ModifiedFen, moveToMake);
+            Log("Value of move made: " + moveToMake.ValueOfMove.ToString());
             return moveToMake;
         }
 
@@ -173,7 +239,7 @@ namespace StudentAI
                 //        myPieces.Remove(moveToCheck.To);
                 //    }
                 //}
-                ModifiedFen = MakeMove(ModifiedFen, moveToCheck);
+                //ModifiedFen = MakeMove(ModifiedFen, moveToCheck);
 
                 return true;
             }
@@ -2491,15 +2557,50 @@ namespace StudentAI
 
 
         #region MIN MAX SUPPORT
-        struct MoveStats
+        class MoveStats
         {
-            ChessMove rootMove;
-            string boardAfterMove;
-            long anticipatedValue;
-            ChessColor colorOfNextMove;
+            public ChessMove rootMove;
+            public string boardAfterMove;
+            public ChessColor colorOfNextMove;
+            public int depth;
+            public ChessFlag flagOfMove;
+            public MoveStats(ChessMove root, string boardAfterMove,  ChessColor colorOfNextMove, int depth, ChessFlag flagOfMove)
+            {
+                rootMove = root;
+                this.boardAfterMove = boardAfterMove;
+                this.colorOfNextMove = colorOfNextMove;
+                this.flagOfMove = flagOfMove;
+                this.depth = depth;
+            }
         }
 
-
+        class MoveValue
+        {
+            public int maxValue = 0;
+            public int minValue = 0;
+            public int depth = 1;
+            public ChessColor colorOfStart;
+            public MoveValue(ChessColor color)
+            {
+                colorOfStart = color;
+            }
+        }
+        
+        public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax, int currentMin)
+        {
+            return false;
+            if (moves.Count == 0)
+                return false;
+            if(moves.Max(m=>m.ValueOfMove) > currentMax + currentMax * ((10 - depth)/10))
+            {
+                return true;
+            }
+            //if (moves.Min(m => m.ValueOfMove) < currentMin + currentMin * ((10 - depth) / 10))
+            //{
+            //    return true;
+            //}
+            return false;
+        }
         #endregion
 
 
