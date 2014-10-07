@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UvsChess;
 using System.Linq;
+using System.Diagnostics;
 
 namespace StudentAI
 {
@@ -39,7 +40,7 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            DateTime start = DateTime.Now;
+            Stopwatch start = Stopwatch.StartNew();
             Queue<MoveStats> MovesToEvaluate = new Queue<MoveStats>();
             string fen = BoardToModifiedFen(board);
             List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
@@ -85,7 +86,7 @@ namespace StudentAI
             int movesEvaluated = 0;
             try
             {
-                while ((DateTime.Now - start).TotalSeconds < 5 && MovesToEvaluate.Count > 0)
+                while (start.ElapsedMilliseconds < 5000 && MovesToEvaluate.Count > 0)
                 {
                     MoveStats evaluate = MovesToEvaluate.Dequeue();
                     movesEvaluated++;
