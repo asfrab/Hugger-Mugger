@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UvsChess;
 using System.Linq;
+using System.Timers;
 
 namespace StudentAI
 {
@@ -23,13 +24,54 @@ namespace StudentAI
         }
 
         #region Main Methods
-        //string ModifiedFen = "rnbqkbnrpppppppp________________________________PPPPPPPPRNBQKBNR";
         const char EMPTY_SPACE = '_';
 
         Dictionary<ChessLocation, ChessPiece> myPieces;
         Dictionary<ChessLocation, ChessPiece> theirPieces;
         ChessColor myColorForDict;
 
+        ChessMove RootNegaMax(List<ChessMove> rootMoves, string board, ChessColor myColor, int maxDepth) {
+            ChessMove moveToMake = new ChessMove(null, null);
+            int alpha = short.MinValue, beta = short.MaxValue;
+            int max = short.MinValue;
+            foreach (var move in rootMoves) {
+                int score = -NegaMax(maxDepth, MakeMove(board, move), myColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth);
+                moveValues[move].maxValue = score;
+                if (score > max){
+                    max = score;
+                    moveToMake = move;
+                }
+                if (alpha < score)
+                    alpha = score;
+                if (alpha > beta || OutsideOfThreshhold(0, rootMoves, max, short.MaxValue))
+                    break;
+            }
+            return moveToMake;
+        }
+
+        int NegaMax( int depth, string board, ChessColor currentColor, int alpha, int beta, int maxDepth) {
+            if (depth == 0 || IsMyTurnOver()) return Evaluate(board, currentColor);
+            int max = short.MinValue;
+            List<ChessMove> moves = getPossibleMoves(board, currentColor);
+            foreach (var move in moves)  {
+                int score = -NegaMax( depth - 1, MakeMove(board,move), currentColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth);
+                if( score > max )
+                    max = score;
+                if (alpha < score)
+                    alpha = score;
+                if (alpha > beta || OutsideOfThreshhold(0, moves, max, short.MaxValue))
+                    break;
+            }
+            return max;
+        }
+
+        int Evaluate(string board, ChessColor color) {
+            var moves = getPossibleMoves(board, color);
+            int max = moves.Count == 0 ? short.MinValue : moves.Max(m => m.ValueOfMove);
+            return max;
+        }
+
+        Dictionary<ChessMove, MoveValue> moveValues = new Dictionary<ChessMove, MoveValue>();
         /// <summary>
         /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
         /// The framework will call this method when it's your turn.
@@ -39,22 +81,47 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            DateTime start = DateTime.Now;
-            Queue<MoveStats> MovesToEvaluate = new Queue<MoveStats>();
+            //DateTime start = DateTime.Now;
+            //Queue<MoveStats> MovesToEvaluate = new Queue<MoveStats>();
             string fen = BoardToModifiedFen(board);
             List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
-            Dictionary<ChessMove, MoveValue> moveValues = new Dictionary<ChessMove, MoveValue>();
-            foreach (ChessMove move in possibleMoves)
+
+            moveValues.Clear();
+            foreach (var move in possibleMoves) {
+                moveValues.Add(move, new MoveValue(myColor));
+                moveValues[move].maxValue = int.MinValue;
+            }
+
+            int maxPlyDepth = 1;
+            ChessMove moveToMake = new ChessMove(null,null);
+            moveToMake.ValueOfMove = int.MinValue;
+            while (!IsMyTurnOver()) {
+                moveToMake = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2);
+                ++maxPlyDepth;
+            }
+
+            if (moveToMake.To == null) {
+                moveToMake.Flag = isCheck(fen, moveToMake, myColor) == 0 ? ChessFlag.Stalemate : ChessFlag.Checkmate;
+            }
+
+            List<ChessMove> opponentMoves = getPossibleMoves(MakeMove(fen, moveToMake), myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+
+            if (opponentMoves.Count == 0) {
+                if (isCheck(fen, moveToMake, myColor) > 0) {
+                    moveToMake.Flag = ChessFlag.Checkmate;
+                }
+            }
+            
+            /*foreach (ChessMove move in possibleMoves)
             {
                 MoveValue val = new MoveValue(myColor);
                 val.maxValue = move.ValueOfMove;
                 var movedBoard = MakeMove(fen, move);
                 List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
 
-
                 if (opponentMoves.Count == 0)
                 {
-                    if (move.Flag == ChessFlag.Check)
+                    if (isCheck(fen, move, myColor) > 0)
                     {
                         move.ValueOfMove = 100000;
                         move.Flag = ChessFlag.Checkmate;
@@ -127,14 +194,13 @@ namespace StudentAI
             catch (Exception ex)
             {
                 Log(ex.Message);
-            }
-            Log("Moves Evaluated: " + movesEvaluated.ToString());
-            Log("Moves remaining: " + MovesToEvaluate.Count.ToString());
-            ChessMove moveToMake;
+            }*/
+            //Log("Moves Evaluated: " + movesEvaluated.ToString());
+           //Log("Moves remaining: " + MovesToEvaluate.Count.ToString());
 
             // If there are moves to be made choose one at random
             if (moveValues.Keys.Count > 0)
-            {
+            { 
                 int maxDepth = 0;
                 possibleMoves = new List<ChessMove>();
                 foreach(var kvPair in moveValues)
@@ -144,7 +210,7 @@ namespace StudentAI
                     Log("Value of move : " + kvPair.Key.ValueOfMove);
                     possibleMoves.Add(kvPair.Key);
                 }
-                Log("Max Depth Reached: " + maxDepth.ToString());
+                Log("Max Depth Reached: " + maxPlyDepth);
                 possibleMoves.Sort((a, b) => b.ValueOfMove.CompareTo(a.ValueOfMove));
                 int highestVal = int.MinValue;
                 int pos = 0;
@@ -164,11 +230,11 @@ namespace StudentAI
                 {
                     Random rand = new Random();
                     int indexOfMove = rand.Next(pos);
-                    moveToMake = possibleMoves[indexOfMove];
+                    //moveToMake = possibleMoves[indexOfMove];
                 }
                 else
                 {
-                    moveToMake = possibleMoves[0];
+                   // moveToMake = possibleMoves[0];
                 }
                 // Change position of our piec in local collection
                 //pieceToMove = myPieces[moveToMake.From];
@@ -191,7 +257,7 @@ namespace StudentAI
 
             //if (moveToMake.From != null)
             //    ModifiedFen = MakeMove(ModifiedFen, moveToMake);
-            Log("Value of move made: " + moveToMake.ValueOfMove.ToString());
+            Log("Value of move made: " + moveValues[moveToMake].maxValue);
             return moveToMake;
         }
 
@@ -2591,7 +2657,11 @@ namespace StudentAI
             return false;
             if (moves.Count == 0)
                 return false;
-            if(moves.Max(m=>m.ValueOfMove) > currentMax + currentMax * ((10 - depth)/10))
+            string asd = moves.Max(m => m.ValueOfMove).ToString();
+            string asdaf = (currentMax + currentMax * ((double)(10 - depth)/10)).ToString();
+            Log(asd);
+            Log(asdaf);
+            if(moves.Max(m=>m.ValueOfMove) > currentMax + currentMax * ((double)(10 - depth)/10))
             {
                 return true;
             }
