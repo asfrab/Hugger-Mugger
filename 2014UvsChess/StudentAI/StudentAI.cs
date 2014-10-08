@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UvsChess;
 using System.Linq;
+using System.Diagnostics;
 
 namespace StudentAI
 {
@@ -28,13 +29,14 @@ namespace StudentAI
         Dictionary<ChessLocation, ChessPiece> myPieces;
         Dictionary<ChessLocation, ChessPiece> theirPieces;
         ChessColor myColorForDict;
-
-        ChessMove RootNegaMax(List<ChessMove> rootMoves, string board, ChessColor myColor, int maxDepth) {
+        int MAXDEPTH = 0;
+        ChessMove RootNegaMax(List<ChessMove> rootMoves, string board, ChessColor myColor, int maxDepth, int boardval) {
+            MAXDEPTH = maxDepth;
             ChessMove moveToMake = new ChessMove(null, null);
             int alpha = short.MinValue, beta = short.MaxValue;
             int max = short.MinValue;
             foreach (var move in rootMoves) {
-                int score = -NegaMax(maxDepth, MakeMove(board, move), myColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth);
+                int score = -NegaMax(maxDepth, MakeMove(board, move), myColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth, move.Flag, boardval);
                 moveValues[move].maxValue = score;
                 if (score > max){
                     max = score;
@@ -42,23 +44,34 @@ namespace StudentAI
                 }
                 if (alpha < score)
                     alpha = score;
-                if (alpha > beta || OutsideOfThreshhold(0, rootMoves, max, short.MaxValue))
+                if (alpha > beta || OutsideOfThreshhold(MAXDEPTH - maxDepth, rootMoves, boardval))
                     break;
             }
             return moveToMake;
         }
 
-        int NegaMax( int depth, string board, ChessColor currentColor, int alpha, int beta, int maxDepth) {
+        int NegaMax( int depth, string board, ChessColor currentColor, int alpha, int beta, int maxDepth, ChessFlag flag, int boardVal) {
             if (depth == 0 || IsMyTurnOver()) return Evaluate(board, currentColor);
             int max = short.MinValue;
             List<ChessMove> moves = getPossibleMoves(board, currentColor);
+            if(moves.Count == 0)
+            {
+                if(flag == ChessFlag.Check)
+                {
+                    max = -PieceVals.CHECKMATE;
+                }
+                else
+                {
+                    max = -PieceVals.STALEMATE;
+                }
+            }
             foreach (var move in moves)  {
-                int score = -NegaMax( depth - 1, MakeMove(board,move), currentColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth);
+                int score = -NegaMax(depth - 1, MakeMove(board, move), currentColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth, move.Flag, boardVal);
                 if( score > max )
                     max = score;
                 if (alpha < score)
                     alpha = score;
-                if (alpha > beta || OutsideOfThreshhold(0, moves, max, short.MaxValue))
+                if (alpha > beta || OutsideOfThreshhold(MAXDEPTH - depth, moves, boardVal))
                     break;
             }
             return max;
@@ -94,8 +107,11 @@ namespace StudentAI
             int maxPlyDepth = 1;
             ChessMove moveToMake = new ChessMove(null,null);
             moveToMake.ValueOfMove = int.MinValue;
+            isCheckHelper(fen, myColor, moveToMake);
+            int boardVal = moveToMake.ValueOfMove;
+            moveToMake.ValueOfMove = int.MinValue;
             while (!IsMyTurnOver()) {
-                moveToMake = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2);
+                moveToMake = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2, boardVal);
                 ++maxPlyDepth;
             }
 
@@ -1753,6 +1769,8 @@ namespace StudentAI
             public static int KNIGHTROOKCHANGE = 5;
             public static int PAWNSTOCHANGE = 7;
             public static int CHECKVAL = 300;
+            public static int STALEMATE = 0;
+            public static int CHECKMATE = 4500;
         }
 
         public int isCheckHelper(string before, ChessColor color, ChessMove move)
@@ -2650,24 +2668,25 @@ namespace StudentAI
                 colorOfStart = color;
             }
         }
-        
-        public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax, int currentMin)
+
+        static int[] ThresholdVals = new int[] {10000,3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
+
+        public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax)
         {
-            return false;
+            if(depth >= 19) //we only go down 18 half plys.
+            {
+                depth = 18;
+            }
             if (moves.Count == 0)
                 return false;
-            string asd = moves.Max(m => m.ValueOfMove).ToString();
-            string asdaf = (currentMax + currentMax * ((double)(10 - depth)/10)).ToString();
-            Log(asd);
-            Log(asdaf);
-            if(moves.Max(m=>m.ValueOfMove) > currentMax + currentMax * ((double)(10 - depth)/10))
+            if (moves.Max(m => m.ValueOfMove) > currentMax + ThresholdVals[depth])
             {
                 return true;
             }
-            //if (moves.Min(m => m.ValueOfMove) < currentMin + currentMin * ((10 - depth) / 10))
-            //{
-            //    return true;
-            //}
+            if (moves.Min(m => m.ValueOfMove) < currentMax - ThresholdVals[depth])
+            {
+                return true;
+            }
             return false;
         }
         #endregion
