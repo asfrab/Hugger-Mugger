@@ -35,6 +35,7 @@ namespace StudentAI
             ChessMove moveToMake = new ChessMove(null, null);
             int alpha = short.MinValue, beta = short.MaxValue;
             int max = short.MinValue;
+
             foreach (var move in rootMoves) {
                 int score = -NegaMax(maxDepth, MakeMove(board, move), myColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth, move.Flag, boardval);
                 moveValues[move].maxValue = score;
@@ -44,7 +45,7 @@ namespace StudentAI
                 }
                 if (alpha < score)
                     alpha = score;
-                if (alpha > beta || OutsideOfThreshhold(MAXDEPTH - maxDepth, rootMoves, boardval))
+                if (alpha > beta)
                     break;
             }
             return moveToMake;
@@ -64,6 +65,10 @@ namespace StudentAI
                 {
                     max = -PieceVals.STALEMATE;
                 }
+                return max;
+            }
+            if (OutsideOfThreshhold(MAXDEPTH - depth, moves, boardVal)){
+                //return max;
             }
             foreach (var move in moves)  {
                 int score = -NegaMax(depth - 1, MakeMove(board, move), currentColor == ChessColor.White ? ChessColor.Black : ChessColor.White, -1 * beta, -1 * alpha, maxDepth, move.Flag, boardVal);
@@ -71,9 +76,11 @@ namespace StudentAI
                     max = score;
                 if (alpha < score)
                     alpha = score;
-                if (alpha > beta || OutsideOfThreshhold(MAXDEPTH - depth, moves, boardVal))
+                if (alpha > beta)
                     break;
             }
+            if (MAXDEPTH - depth > maxDepth)
+                maxDepth = MAXDEPTH - depth;
             return max;
         }
 
@@ -97,6 +104,7 @@ namespace StudentAI
             Queue<MoveStats> MovesToEvaluate = new Queue<MoveStats>();
             string fen = BoardToModifiedFen(board);
             List<ChessMove> possibleMoves = getPossibleMoves(fen, myColor);
+            Random rand = new Random();
 
             moveValues.Clear();
             foreach (var move in possibleMoves) {
@@ -104,7 +112,7 @@ namespace StudentAI
                 moveValues[move].maxValue = int.MinValue;
             }
 
-            int maxPlyDepth = 1;
+            int maxPlyDepth = 2;
             ChessMove moveToMake = new ChessMove(null,null);
             moveToMake.ValueOfMove = int.MinValue;
             isCheckHelper(fen, myColor, moveToMake);
@@ -118,16 +126,19 @@ namespace StudentAI
             if (moveToMake.To == null) {
                 moveToMake.Flag = isCheck(fen, moveToMake, myColor) == 0 ? ChessFlag.Stalemate : ChessFlag.Checkmate;
             }
+            else {
+                List<ChessMove> opponentMoves = getPossibleMoves(MakeMove(fen, moveToMake), myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
 
-            List<ChessMove> opponentMoves = getPossibleMoves(MakeMove(fen, moveToMake), myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-
-            if (opponentMoves.Count == 0) {
-                if (isCheck(fen, moveToMake, myColor) > 0) {
-                    moveToMake.Flag = ChessFlag.Checkmate;
+                if (opponentMoves.Count == 0) {
+                    if (isCheck(fen, moveToMake, myColor) > 0) {
+                        moveToMake.Flag = ChessFlag.Checkmate;
+                    }
                 }
+
+                possibleMoves = moveValues.Where(m => m.Value.maxValue == moveValues[moveToMake].maxValue).Select(m => m.Key).ToList();
+                moveToMake = possibleMoves[rand.Next(possibleMoves.Count)];
             }
-            
-            /*foreach (ChessMove move in possibleMoves)
+                /*foreach (ChessMove move in possibleMoves)
             {
                 MoveValue val = new MoveValue(myColor);
                 val.maxValue = move.ValueOfMove;
@@ -216,16 +227,16 @@ namespace StudentAI
             // If there are moves to be made choose one at random
             if (moveValues.Keys.Count > 0)
             {
-                int maxDepth = 0;
+                //int maxDepth = 0;
                 possibleMoves = new List<ChessMove>();
                 foreach(var kvPair in moveValues)
                 {
-                    maxDepth = maxDepth > kvPair.Value.depth ? maxDepth : kvPair.Value.depth;
+                    //maxDepth = maxDepth > kvPair.Value.depth ? maxDepth : kvPair.Value.depth;
                     kvPair.Key.ValueOfMove = kvPair.Value.maxValue + kvPair.Value.minValue;
-                    Log("Value of move : " + kvPair.Key.ValueOfMove);
+                    Log("Value of move : " + kvPair.Value.maxValue);
                     possibleMoves.Add(kvPair.Key);
                 }
-                Log("Max Depth Reached: " + maxPlyDepth);
+                Log("Max Depth Reached: " + MAXDEPTH);
                 possibleMoves.Sort((a, b) => b.ValueOfMove.CompareTo(a.ValueOfMove));
                 int highestVal = int.MinValue;
                 int pos = 0;
@@ -243,7 +254,6 @@ namespace StudentAI
                 }
                 if (pos > 0)
                 {
-                    Random rand = new Random();
                     int indexOfMove = rand.Next(pos);
                     //moveToMake = possibleMoves[indexOfMove];
                 }
@@ -1768,7 +1778,7 @@ namespace StudentAI
             public static int BISHOPPAIR = 70;
             public static int KNIGHTROOKCHANGE = 5;
             public static int PAWNSTOCHANGE = 7;
-            public static int CHECKVAL = 300;
+            public static int CHECKVAL = 100;
             public static int STALEMATE = 0;
             public static int CHECKMATE = 4500;
         }
@@ -2669,7 +2679,7 @@ namespace StudentAI
             }
         }
 
-        static int[] ThresholdVals = new int[] {10000,3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
+        static int[] ThresholdVals = new int[] {3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
 
         public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax)
         {
