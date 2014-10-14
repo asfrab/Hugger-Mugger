@@ -30,7 +30,7 @@ namespace StudentAI
         Dictionary<ChessLocation, ChessPiece> theirPieces;
         ChessColor myColorForDict;
         int MAXDEPTH = 0;
-        ChessMove RootNegaMax(List<ChessMove> rootMoves, string board, ChessColor myColor, int maxDepth, int boardval) {
+        int RootNegaMax(List<ChessMove> rootMoves, string board, ChessColor myColor, int maxDepth, int boardval) {
             MAXDEPTH = maxDepth;
             ChessMove moveToMake = new ChessMove(null, null);
             int alpha = short.MinValue, beta = short.MaxValue;
@@ -53,7 +53,7 @@ namespace StudentAI
                         break;
                 }
             }
-            return moveToMake;
+            return max;
         }
 
         int? NegaMax( int depth, string board, ChessColor currentColor, int alpha, int beta, int maxDepth, ChessFlag flag, int boardVal) {
@@ -123,206 +123,59 @@ namespace StudentAI
             moveValues.Clear();
             foreach (var move in possibleMoves) {
                 moveValues.Add(move, new MoveValue(myColor));
-                moveValues[move].maxValue = int.MinValue;
+                moveValues[move].maxValue = short.MinValue;
             }
 
             int maxPlyDepth = 1;
             ChessMove moveToMake = new ChessMove(null, null);
-            moveToMake.ValueOfMove = int.MinValue;
+            moveToMake.ValueOfMove = short.MinValue;
             isCheckHelper(fen, myColor, moveToMake);
             int boardVal = moveToMake.ValueOfMove;
-            moveToMake.ValueOfMove = int.MinValue;
+            moveToMake.ValueOfMove = short.MinValue;
             int depthReached = 0;
             Dictionary<ChessMove, int> GoodValues = new Dictionary<ChessMove, int>();
             int maxValue = 0;
 
-                while (!IsMyTurnOver())
+            while (!IsMyTurnOver())
+            {
+                int tempMax = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2, boardVal);
+                if (!IsMyTurnOver())
                 {
-                    moveToMake = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2, boardVal);
-
-                    if (!IsMyTurnOver())
+                    maxValue = tempMax;
+                    depthReached = maxPlyDepth;
+                    GoodValues = new Dictionary<ChessMove,int>();
+                    foreach (var moveish in moveValues)
                     {
-                        maxValue = moveValues[moveToMake].maxValue;
-                        depthReached = maxPlyDepth;
-                        GoodValues = new Dictionary<ChessMove,int>();
-                        foreach (var moveish in moveValues)
-                        {
-                            
-                            GoodValues[moveish.Key] = moveish.Value.maxValue;
-                        }                        
-                    }
-                    ++maxPlyDepth;
+                        GoodValues[moveish.Key] = moveish.Value.maxValue;
+                    }                        
                 }
-                Log("MaxValue:" + maxValue);
-                foreach(var moveish in GoodValues)
-                {
-                    Log("Good Move Value: " + moveish.Value);
-                }
+                ++maxPlyDepth;
+            }
+            Log("MaxValue:" + maxValue);
+            foreach(var moveish in GoodValues)
+            {
+                Log("Good Move Value: " + moveish.Value);
+            }
+
+            if (GoodValues.Count > 0) {
                 possibleMoves = GoodValues.Where(m => m.Value == maxValue).Select(m => m.Key).ToList();
                 Log(possibleMoves.Count.ToString());
                 moveToMake = possibleMoves[rand.Next(possibleMoves.Count)];
-            
-
-            Log("Max Depth: " + depthReached);
-            if (moveToMake.To == null) {
-                moveToMake.Flag = isCheck(fen, moveToMake, myColor) == 0 ? ChessFlag.Stalemate : ChessFlag.Checkmate;
             }
             else {
-                List<ChessMove> opponentMoves = getPossibleMoves(MakeMove(fen, moveToMake), myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-
-                if (opponentMoves.Count == 0) {
-                    if (isCheck(fen, moveToMake, myColor) > 0) {
-                        moveToMake.Flag = ChessFlag.Checkmate;
-                    }
-                }               
+                moveToMake.Flag = ChessFlag.Stalemate;
+                return moveToMake;
             }
+
+            Log("Max Depth: " + depthReached);
+            List<ChessMove> opponentMoves = getPossibleMoves(MakeMove(fen, moveToMake), myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+
+            if (opponentMoves.Count == 0) {
+                if (isCheck(fen, moveToMake, myColor) > 0) {
+                    moveToMake.Flag = ChessFlag.Checkmate;
+                }
+            }               
             Log("Value of move made: " + GoodValues[moveToMake]);
-            return moveToMake;
-                /*foreach (ChessMove move in possibleMoves)
-            {
-                MoveValue val = new MoveValue(myColor);
-                val.maxValue = move.ValueOfMove;
-                var movedBoard = MakeMove(fen, move);
-                List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, myColor == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-
-                if (opponentMoves.Count == 0)
-                {
-                    if (isCheck(fen, move, myColor) > 0)
-                    {
-                        move.ValueOfMove = 100000;
-                        move.Flag = ChessFlag.Checkmate;
-                    }
-                    else
-                    {
-                        move.ValueOfMove = -100;
-                        move.Flag = ChessFlag.Stalemate;
-                    }
-                }
-                else
-                {
-                    int opponentBest = int.MinValue;
-                    foreach (var opMove in opponentMoves)
-                    {
-                        if (opMove.ValueOfMove > opponentBest)
-                        {
-                            opponentBest = opMove.ValueOfMove;
-                        }
-                        MovesToEvaluate.Enqueue(new MoveStats(move, MakeMove(movedBoard, opMove), myColor, 2, opMove.Flag));
-                    }
-                    move.ValueOfMove = -opponentBest;
-                }
-                val.minValue = move.ValueOfMove;
-                moveValues[move] = val;
-            }
-
-            int movesEvaluated = 0;
-            try
-            {
-                while (start.ElapsedMilliseconds < 5000 && MovesToEvaluate.Count > 0)
-                {
-                    MoveStats evaluate = MovesToEvaluate.Dequeue();
-                    movesEvaluated++;
-                    List<ChessMove> opponentMoves = getPossibleMoves(evaluate.boardAfterMove, evaluate.colorOfNextMove);
-                    if (!OutsideOfThreshhold(evaluate.depth, opponentMoves, moveValues[evaluate.rootMove].maxValue, moveValues[evaluate.rootMove].minValue))
-                    {
-                        int opponentBest = int.MinValue;
-                        int myBest = opponentMoves.Count > 0 ? int.MinValue : evaluate.flagOfMove == ChessFlag.Check ? 10000 : 0;
-                        if (evaluate.colorOfNextMove == myColor)
-                        {
-
-                            foreach (var myMove in opponentMoves)
-                            {
-                                if (myMove.ValueOfMove > myBest)
-                                {
-                                    myBest = myMove.ValueOfMove;
-                                }
-                                MovesToEvaluate.Enqueue(new MoveStats(evaluate.rootMove, MakeMove(evaluate.boardAfterMove, myMove), evaluate.colorOfNextMove == ChessColor.Black ? ChessColor.White : ChessColor.Black, evaluate.depth + 1, myMove.Flag));
-                            }
-                            moveValues[evaluate.rootMove].maxValue = Math.Max(moveValues[evaluate.rootMove].maxValue, myBest);
-                        }
-                        else
-                        {
-
-                            foreach (var opMove in opponentMoves)
-                            {
-                                if (opMove.ValueOfMove > opponentBest)
-                                {
-                                    opponentBest = opMove.ValueOfMove;
-                                }
-                                MovesToEvaluate.Enqueue(new MoveStats(evaluate.rootMove, MakeMove(evaluate.boardAfterMove, opMove), evaluate.colorOfNextMove == ChessColor.Black ? ChessColor.White : ChessColor.Black, evaluate.depth + 1, opMove.Flag));
-                            }
-                            moveValues[evaluate.rootMove].minValue = Math.Min(moveValues[evaluate.rootMove].minValue, -opponentBest);
-                        }
-                        moveValues[evaluate.rootMove].depth = evaluate.depth;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log(ex.Message);
-            }*/
-            //Log("Moves Evaluated: " + movesEvaluated.ToString());
-           //Log("Moves remaining: " + MovesToEvaluate.Count.ToString());
-
-            // If there are moves to be made choose one at random
-            if (moveValues.Keys.Count > 0)
-            {
-                //int maxDepth = 0;
-                possibleMoves = new List<ChessMove>();
-                foreach(var kvPair in moveValues)
-                {
-                    //maxDepth = maxDepth > kvPair.Value.depth ? maxDepth : kvPair.Value.depth;
-                    kvPair.Key.ValueOfMove = kvPair.Value.maxValue + kvPair.Value.minValue;
-                    Log("Value of move : " + kvPair.Value.maxValue);
-                    possibleMoves.Add(kvPair.Key);
-                }
-                Log("Max Depth Reached: " + MAXDEPTH);
-                possibleMoves.Sort((a, b) => b.ValueOfMove.CompareTo(a.ValueOfMove));
-                int highestVal = int.MinValue;
-                int pos = 0;
-                foreach (var move in possibleMoves)
-                {
-                    if (move.ValueOfMove > highestVal)
-                    {
-                        highestVal = move.ValueOfMove;
-                    }
-                    else if (move.ValueOfMove < highestVal)
-                    {
-                        break;
-                    }
-                    pos++;
-                }
-                if (pos > 0)
-                {
-                    int indexOfMove = rand.Next(pos);
-                    //moveToMake = possibleMoves[indexOfMove];
-                }
-                else
-                {
-                   // moveToMake = possibleMoves[0];
-                }
-                // Change position of our piec in local collection
-                //pieceToMove = myPieces[moveToMake.From];
-
-                //if ((pieceToMove == ChessPiece.WhitePawn || pieceToMove == ChessPiece.BlackPawn) && (moveToMake.To.Y == 0 || moveToMake.To.Y == 7)) {
-                //    pieceToMove = myColor == ChessColor.Black ? ChessPiece.BlackQueen : ChessPiece.WhiteQueen;
-                //}
-                //myPieces.Add(moveToMake.To, pieceToMove);
-                //myPieces.Remove(moveToMake.From);
-
-                //// If we attacked their piece, remove it from collection
-                //if (theirPieces.TryGetValue(moveToMake.To, out pieceToMove)) {
-                //    theirPieces.Remove(moveToMake.To);
-                //}
-            }
-            else
-            { // No moves left.  Declare stalemate
-                moveToMake = new ChessMove(null, null, ChessFlag.Stalemate);
-            }
-
-            //if (moveToMake.From != null)
-            //    ModifiedFen = MakeMove(ModifiedFen, moveToMake);
-            Log("Value of move made: " + moveValues[moveToMake].maxValue);
             return moveToMake;
         }
 
@@ -335,46 +188,32 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            string fen = BoardToModifiedFen(boardBeforeMove);
-            List<ChessMove> possibleMoves = getPossibleMoves(fen, colorOfPlayerMoving);
-            foreach (ChessMove move in possibleMoves)
-            {
-                if (move.Flag == ChessFlag.Check)
-                {
-                    var movedBoard = MakeMove(fen, move);
-                    List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, colorOfPlayerMoving == ChessColor.Black ? ChessColor.White : ChessColor.Black);
-                    if (opponentMoves.Count == 0)
-                    {
-                        move.Flag = ChessFlag.Checkmate;
-                        move.ValueOfMove = int.MaxValue;
+            try {
+                string fen = BoardToModifiedFen(boardBeforeMove);
+                List<ChessMove> possibleMoves = getPossibleMoves(fen, colorOfPlayerMoving);
+                foreach (ChessMove move in possibleMoves) {
+                    if (move.Flag == ChessFlag.Check) {
+                        var movedBoard = MakeMove(fen, move);
+                        List<ChessMove> opponentMoves = getPossibleMoves(movedBoard, colorOfPlayerMoving == ChessColor.Black ? ChessColor.White : ChessColor.Black);
+                        if (opponentMoves.Count == 0) {
+                            move.Flag = ChessFlag.Checkmate;
+                            move.ValueOfMove = int.MaxValue;
+                        }
                     }
                 }
+                var tempDict = myPieces;
+                myPieces = theirPieces;
+                theirPieces = tempDict;
+                myColorForDict = colorOfPlayerMoving;
+
+                if (possibleMoves.Contains(moveToCheck)) {
+                    return true;
+                }
             }
-            var tempDict = myPieces;
-            myPieces = theirPieces;
-            theirPieces = tempDict;
-            myColorForDict = colorOfPlayerMoving;
-
-            if (possibleMoves.Contains(moveToCheck))
-            {
-                // Change the position of the opponents piece in local collection 
-                //if (myPieces != null)
-                //{
-                //    ChessPiece temp = theirPieces[moveToCheck.From];
-                //    theirPieces.Add(moveToCheck.To, temp);
-                //    theirPieces.Remove(moveToCheck.From);
-
-                //    // If they attacked our piece, remove it from local collection
-                //    if (myPieces.TryGetValue(moveToCheck.To, out temp))
-                //    {
-                //        myPieces.Remove(moveToCheck.To);
-                //    }
-                //}
-                //ModifiedFen = MakeMove(ModifiedFen, moveToCheck);
-
-                return true;
+            catch (Exception ex) {
+                return false;
             }
-            return false;
+                return false;
         }
 
         private List<ChessMove> getPossibleMoves(string board, ChessColor myColor)
@@ -448,6 +287,9 @@ namespace StudentAI
         #region Fen Methods
         public string MakeMove(string fen, ChessMove move)
         {
+            if (move.To == null) {
+                return fen;
+            }
             StringBuilder newFen = new StringBuilder(fen);
             int fromIndex = move.From.X % 8 + move.From.Y * 8;
             int toIndex = move.To.X % 8 + move.To.Y * 8;

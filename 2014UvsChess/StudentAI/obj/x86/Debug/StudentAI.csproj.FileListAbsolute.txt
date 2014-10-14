@@ -26,3 +26,5 @@ C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\StudentAI\bin\x86\Deb
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.csprojResolveAssemblyReference.cache
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.dll
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\StudentAI\obj\x86\Debug\StudentAI.pdb
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\StudentAI.dll
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Debug\StudentAI.pdb
