@@ -2559,7 +2559,7 @@ namespace StudentAI
             }
         }
 
-        static int[] ThresholdVals = new int[] {10000,3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
+        static int[] ThresholdVals = new int[] {10000,10000,10000,10000,3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
 
         public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax)
         {
