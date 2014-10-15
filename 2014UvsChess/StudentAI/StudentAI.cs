@@ -19,7 +19,7 @@ namespace StudentAI
 #if DEBUG
             get { return "Hugger-Mugger (Debug)"; }
 #else
-            get { return "Hugger-Mugger Queued"; }
+            get { return "Hugger-Mugger Every"; }
 #endif
         }
 
@@ -126,7 +126,7 @@ namespace StudentAI
                 moveValues[move].maxValue = short.MinValue;
             }
 
-            int maxPlyDepth = 1;
+            int maxPlyDepth = 2;
             ChessMove moveToMake = new ChessMove(null, null);
             moveToMake.ValueOfMove = short.MinValue;
             isCheckHelper(fen, myColor, moveToMake);
@@ -134,20 +134,24 @@ namespace StudentAI
             moveToMake.ValueOfMove = short.MinValue;
             int depthReached = 0;
             Dictionary<ChessMove, int> GoodValues = new Dictionary<ChessMove, int>();
-            int maxValue = 0;
+            int maxValue = short.MinValue;
 
             while (!IsMyTurnOver())
             {
-                int tempMax = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth * 2, boardVal);
+                int tempMax = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth, boardVal);
                 if (!IsMyTurnOver())
                 {
-                    maxValue = tempMax;
-                    depthReached = maxPlyDepth;
-                    GoodValues = new Dictionary<ChessMove,int>();
-                    foreach (var moveish in moveValues)
+                    if (tempMax > short.MinValue || maxValue == short.MinValue) //only consider the last time we didn't trim EVERYTHING - or consider it if what we know about is all that bad.
                     {
-                        GoodValues[moveish.Key] = moveish.Value.maxValue;
-                    }                        
+                        maxValue = tempMax;
+                        depthReached = maxPlyDepth;
+                        GoodValues = new Dictionary<ChessMove, int>();
+                        foreach (var moveish in moveValues)
+                        {
+                            GoodValues[moveish.Key] = moveish.Value.maxValue;
+                        }
+                    }
+                    
                 }
                 ++maxPlyDepth;
             }
