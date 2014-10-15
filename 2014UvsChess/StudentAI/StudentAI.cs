@@ -19,7 +19,7 @@ namespace StudentAI
 #if DEBUG
             get { return "Hugger-Mugger (Debug)"; }
 #else
-            get { return "Hugger-Mugger Every"; }
+            get { return "Hugger-Mugger"; }
 #endif
         }
 
@@ -2569,9 +2569,9 @@ namespace StudentAI
         public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax)
         {
             //return false;
-            if(depth >= 19) //we only go down 18 half plys.
+            if(depth >= 23) //we only go down 22 plys.
             {
-                depth = 18;
+                depth = 22;
             }
             if (moves.Count == 0)
                 return false;
