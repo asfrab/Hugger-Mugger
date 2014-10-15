@@ -124,7 +124,7 @@ namespace StudentAI
                 moveValues[move].maxValue = short.MinValue;
             }
 
-            int maxPlyDepth = 2;
+            int maxPlyDepth = 3;
             ChessMove moveToMake = new ChessMove(null, null);
             moveToMake.ValueOfMove = short.MinValue;
             isCheckHelper(fen, myColor, moveToMake);
@@ -139,7 +139,8 @@ namespace StudentAI
                 int tempMax = RootNegaMax(possibleMoves, fen, myColor, maxPlyDepth, boardVal);
                 if (!IsMyTurnOver())
                 {
-                    if (tempMax > short.MinValue || maxValue == short.MinValue) //only consider the last time we didn't trim EVERYTHING - or consider it if what we know about is all that bad.
+                    //if tempMax is > short.MaxValue one of the moves was initally removed.  Suspect results - don't use them.
+                    if ((tempMax > short.MinValue && tempMax < short.MaxValue) || maxValue == short.MinValue) //only consider the last time we didn't trim EVERYTHING - or consider it if what we know about is all that bad.
                     {
                         maxValue = tempMax;
                         depthReached = maxPlyDepth;
@@ -2563,10 +2564,11 @@ namespace StudentAI
             }
         }
 
-        static int[] ThresholdVals = new int[] {10000,10000,10000,10000,3224,2579,2063,1650,1320,1056,845,676,540,432,346,276,221,177,141,113, 90, 72};
+        static int[] ThresholdVals = new int[] { 10000, 10000, 10000, 10000, 10000, 2579, 2579, 2063, 2063, 1650, 1650, 1320, 1320, 1056, 1056, 845, 845, 676, 676, 540, 540, 432, 432, 346, 346, 276, 276, 221, 221, 177, 177, 141, 141, 113, 113, 90, 90, 72, 72 };
 
         public bool OutsideOfThreshhold(int depth, List<ChessMove> moves, int currentMax)
         {
+            //return false;
             if(depth >= 19) //we only go down 18 half plys.
             {
                 depth = 18;
