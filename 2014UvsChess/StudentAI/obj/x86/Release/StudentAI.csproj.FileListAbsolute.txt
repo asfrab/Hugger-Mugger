@@ -25,3 +25,5 @@ C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Fram
 C:\Users\Andrew\Documents\Fall2014\AI\GroupStuff\Hugger-Mugger\2014UvsChess\Framework\bin\x86\Release\StudentAI.pdb
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\debug\StudentAI.dll
 C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\debug\StudentAI.pdb
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\release\StudentAI.dll
+C:\Users\Kenny\Documents\GitHub\Hugger-Mugger\2014UvsChess\Framework\bin\release\StudentAI.pdb

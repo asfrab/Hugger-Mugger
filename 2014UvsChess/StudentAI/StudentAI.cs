@@ -89,15 +89,13 @@ namespace StudentAI
                         break;
                 }
             }
-            if (MAXDEPTH - depth > maxDepth)
-                maxDepth = MAXDEPTH - depth;
             return max;
         }
 
         int Evaluate(string board, ChessColor color) {
-            var moves = getPossibleMoves(board, color);
-            int max = moves.Count == 0 ? short.MinValue : moves.Max(m => m.ValueOfMove);
-            return max;
+            ChessMove move = new ChessMove(null, null);
+            isCheckHelper(board, color, move);
+            return move.ValueOfMove;
         }
 
         Dictionary<ChessMove, MoveValue> moveValues = new Dictionary<ChessMove, MoveValue>();
