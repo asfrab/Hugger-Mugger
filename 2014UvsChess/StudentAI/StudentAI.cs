@@ -64,7 +64,7 @@ namespace StudentAI
             {
                 if(flag == ChessFlag.Check)
                 {
-                    max = -PieceVals.CHECKMATE;
+                    max = -PieceVals.CHECKMATE - depth;
                 }
                 else
                 {
